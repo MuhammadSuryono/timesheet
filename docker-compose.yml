@@ -1,0 +1,11 @@
+version: '3'
+services:
+    web:
+        container_name: timesheet-app
+        build:
+            context: ./php
+        ports:
+            - 7002:7002
+        volumes:
+            - .:/var/www/html/timesheet/
+            # - ./custom.ini:/usr/local/etc/php/conf.d/custom.ini

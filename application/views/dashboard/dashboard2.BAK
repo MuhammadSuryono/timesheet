@@ -1,0 +1,153 @@
+<!-- Main Content -->
+<div class="main-content">
+  <section class="section">
+    <div class="section-header">
+      <h1>Dashboard</h1>
+    </div>
+    
+    <div class="flash-data" data-flashdata="<?php echo $this->session->flashdata('flash'); ?>"></div>
+
+    <div class="row row-eq-height">
+
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Divisi <?php echo $this->session->userdata('ses_divisi')?></h4>
+          </div>
+          <div class="card-body">
+
+            <?php
+            $userdir = $direksinya['atasan'];
+            $carinamadir = $this->db->query("SELECT * FROM tb_user WHERE id_user='$userdir'")->row_array();
+            ?>
+
+            <ul>
+              <li><?php echo $carinamadir['nama_user'] ?> ( <?php echo $carinamadir['divisi']?> )</li>
+              <?php
+              foreach ($leader as $key) {
+              ?>
+              <li><?php echo $key['nama_user'] ?> ( <?php echo $key['jabatan1'] ?> )</li>
+              <?php
+              }
+              ?>
+              <?php
+              foreach ($alldiv as $ad) {
+              ?>
+              <li><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )</li>
+              <?php
+              }
+              ?>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+
+
+
+<?php
+date_default_timezone_set('Asia/Jakarta');
+function date_range($first, $last, $step = '+1 day', $output_format = 'Y-m-d' ) {
+$dates = array();
+$current = strtotime($first);
+$last = strtotime($last);
+while( $current <= $last ) {
+if (date('D', $current)!='Sat' & date('D', $current)!='Sun'){
+$dates[] = date($output_format, $current);}
+$current = strtotime($step, $current);
+}
+return $dates;
+}
+
+
+$endDate = date('Y-m-d', strtotime("-1 days"));
+
+if (date('d', strtotime("-1 days")) < 21){
+$lastMonth = date('Y-m-d', strtotime('first day of last month'));
+$tahun = date('Y', strtotime($lastMonth));
+$bulan = date('m', strtotime($lastMonth));
+$datenya = new DateTime();
+$datenya->setDate($tahun, $bulan, 21);
+$startDate = $datenya->format('Y-m-d');
+} else {
+$tahun = date('Y', strtotime($endDate));
+$bulan = date('m', strtotime($endDate));
+$datenya = new DateTime();
+$datenya->setDate($tahun, $bulan, 21);
+$startDate = $datenya->format('Y-m-d');
+}
+
+$daftarHari = date_range($startDate, $endDate, "+1 day", "Y-m-d");
+
+$user = $this->session->userdata('ses_username');
+
+$tidakisiLKH = array();
+$totaltidakisi = 0;
+foreach ($daftarHari as $dH){
+
+$isiLKH = $this->db->query("SELECT tanggal FROM tugasharian
+WHERE username = '$user'
+and tanggal = '$dH' AND STR_TO_DATE(tanggal, '%Y-%m-%d') BETWEEN $startDate AND STR_TO_DATE($endDate,'%Y-%m-%d')")->num_rows();
+
+if ($isiLKH == 0){
+$tidakisiLKH[] = $dH;
+}
+}
+$totaltidakisi = count($tidakisiLKH);
+?>
+
+<?php
+if ($totaltidakisi < 0){?>
+      <div class="col-lg-6 col-md-6 col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4><?php echo $this->session->userdata('ses_nama')?></h4>
+          </div>
+          <div class="card-body">
+            <p class="text-danger font-weight-bold">Peringatan 3</p>
+            <p>Saudara/i tidak mengisi LKH ke 3 kalinya (tanggal <?php echo date('d-m-Y', strtotime($tidakisiLKH[0])) . ", " . date('d-m-Y', strtotime($tidakisiLKH[1]));  echo ", "; echo date('d-m-Y', strtotime($tidakisiLKH[2]));?>), ini adalah peringatan Terakhir. Gaji saudara/i akan terpotong sesuai dengan hari Anda tidak mengisi LKH.</p>
+            <p>Terima kasih</p>
+          </div>
+        </div>
+      </div>
+<?php } ?>
+
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4><?php echo $this->session->userdata('ses_nama')?></h4>
+          </div>
+<?php
+if ($totaltidakisi < 0){?>
+          <div class="card-body">
+            <p class="text-danger font-weight-bold">Peringatan 3</p>
+            <p>Saudara/i tidak mengisi LKH ke 3 kalinya (tanggal <?php echo date('d-m-Y', strtotime($tidakisiLKH[0])) . ", " . date('d-m-Y', strtotime($tidakisiLKH[1]));  echo ", "; echo date('d-m-Y', strtotime($tidakisiLKH[2]));?>), ini adalah peringatan Terakhir. Gaji saudara/i akan terpotong sesuai dengan hari anda tidak mengisi LKH.</p>
+            <p>Terima kasih</p>
+          </div>
+<?php } ?>
+<?php
+if ($totaltidakisi < 0){?>
+          <div class="card-body">
+            <p class="text-warning font-weight-bold">Peringatan 2</p>
+            <p>Saudara/i tidak mengisi LKH ke 2 kalinya (tanggal <?php echo date('d-m-Y', strtotime($tidakisiLKH[0])); echo ", "; echo date('d-m-Y', strtotime($tidakisiLKH[1])); ?>), ini adalah peringatan Keras. Lalai lagi : Anda akan diberikan "Peringatan ke 3 (tiga)", sekaligus <b>PEMOTONGAN GAJI!</b></p>
+            <p>Terima kasih</p>
+          </div>
+<?php } ?>
+<?php
+if ($totaltidakisi < 0){?>
+          <div class="card-body">
+            <p class="text-warning font-weight-bold">Peringatan 1</p>
+            <p>Saudara/i tidak mengisi LKH pada tanggal <?php echo date('d-m-Y', strtotime($tidakisiLKH[0])); ?>, ini adalah peringatan awal. Jangan mengulang lagi kelalaian mengisi LKH agar tidak mendapat Peringatan ke 2 (dua).</p>
+            <p>Terima kasih</p>
+	    <p><?php echo $totaltidakisi?></p>
+          </div>
+<?php } ?>
+        </div>
+      </div>
+
+
+
+
+  </section>
+</div>
