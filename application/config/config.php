@@ -387,7 +387,7 @@ $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 32140800;
 $config['sess_expire_on_close'] = FALSE;
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = sys_get_temp_dir();
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update']    = 32140800;
 $config['sess_regenerate_destroy'] = FALSE;
@@ -528,3 +528,36 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+//Change this to TRUE
+$config['check_cors'] = TRUE;
+
+//No change here
+$config['allowed_cors_headers'] = [
+  'Origin',
+  'X-Requested-With',
+  'Content-Type',
+  'Accept',
+  'Access-Control-Request-Method',
+  'Authorization',
+];
+
+//No change here
+$config['allowed_cors_methods'] = [
+  'GET',
+  'POST',
+  'OPTIONS',
+  'PUT',
+  'PATCH',
+  'DELETE'
+];
+
+//Set to TRUE to enable Cross-Origin Resource Sharing (CORS) from any source domain
+$config['allow_any_cors_domain'] = TRUE;
+
+
+//Used if $config['check_cors'] is set to TRUE and $config['allow_any_cors_domain'] is set to FALSE. 
+//Set all the allowable domains within the array
+//e.g. $config['allowed_origins'] =['http://www.example.com','https://spa.example.com']
+
+$config['allowed_cors_origins'] = [];
