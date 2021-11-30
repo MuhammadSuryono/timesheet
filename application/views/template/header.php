@@ -22,6 +22,7 @@
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="<?php echo base_url('dist') ?>/assets/css/style.css">
+	<link rel="stylesheet" href="<?php echo base_url('dist') ?>/assets/css/custom.css">
   <link rel="stylesheet" href="<?php echo base_url('dist') ?>/assets/css/components.css">
 
   <!-- SweetAlert2 -->
