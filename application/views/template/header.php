@@ -61,9 +61,7 @@
           <ul class="navbar-nav mr-3">
             <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
             <h3 class="text-white">
-              <?php if (isset($judul)) {
-                echo $judul;
-              } ?>
+							<?= isset($judul) ? $judul : 'MRI TIMESHEET WFH ' ?>
             </h3>
           </ul>
         </form>
