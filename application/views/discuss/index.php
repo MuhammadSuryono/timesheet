@@ -1,7 +1,7 @@
 <div class="main-content">
   <section class="section">
     <div class="section-header">
-      <h1><a href="#"><i class="fa fa-arrow-left"></i></a> &nbsp;&nbsp;<i class="fa fa-comments"></i> Diskusi</h1>
+      <h1><span onclick="backToPreviousPage()" style="cursor: pointer"><i class="fa fa-arrow-left"></i></span> &nbsp;&nbsp;<i class="fa fa-comments"></i> Diskusi</h1>
       <div class="section-header-breadcrumb">
         <div class="breadcrumb-item"><a href="<?php echo base_url('dashboard') ?>">Dashboard</a></div>
         <div class="breadcrumb-item">Diskusi</div>
@@ -183,17 +183,27 @@
 </div>
 
 <script>
-	const idTask = <?= json_encode($id_task) ?>
+
 	$(document).ready(function() {
-		console.log(idTask)
 		const bodyTable = document.getElementById("data-diskusi")
 		bodyTable.innerHTML = loadingDataTable();
 
-		// getDataDiscussByTask();
+		getDataDiscussByTask('/api/discuss/2207').then((res) => {
+			let htmlTableDataDiscuss = ""
+			let data = res.data
 
-		setTimeout(function() {
-			bodyTable.innerHTML = noDataTable();
-		}, 5000)
+			if (data.length > 0) {
+				data.forEach((element, index) => {
+					htmlTableDataDiscuss += `<tr><td class='text-center'>${index + 1}</td><td>${element.title}</td><td>${element.mentor}</td><td class="text-center">${element.created_at}</td><td class="text-center">${element.updated_at}</td><td><button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>&nbsp;Detail</button></td></tr>`
+				});	
+				setTimeout(() => {
+					bodyTable.innerHTML = htmlTableDataDiscuss;	
+				}, 2000)		
+			} else {
+				bodyTable.innerHTML = noDataTable();
+			}
+				
+		});
   	});
 
 	function noDataTable() {
@@ -204,10 +214,27 @@
 		return '<tr class="text-center" style="border-bottom: 1px solid #F0F8FF;"><th colspan="6"><div class="item"><i class="loader --1"></i></div></th></tr>';
 	}
 
-	function getDataDiscussByTask() {
-		fetch('http://localhost:8000/api/discuss/2707')
+	function getDataDiscussByTask(url) {
+		return fetch(url)
 			.then((response) => response.json())
-			.then(data => console.log(data));
+			.then(data => data);
+	}
+
+	function backToPreviousPage() {
+		let lastPopUp = window.localStorage.getItem('last_popup')
+		let previousPage = window.localStorage.getItem('previous_page')
+		let searchData = window.localStorage.getItem('search_data_rekap')
+
+		previousPage = previousPage + "?lastData=true"
+
+		if (searchData !== undefined && searchData !== "") {
+			let dataSearch = JSON.parse(searchData)
+
+			let queryUrl = `&isSearch${dataSearch.is_search}&idUser=${dataSearch.id_user}&startDate=${dataSearch.daritanggal}&endDate=${dataSearch.sampaitanggal}&keyword=${dataSearch.katakunci}`
+			previousPage = previousPage + queryUrl
+		}
+
+		window.location.href = previousPage
 	}
 
 </script>

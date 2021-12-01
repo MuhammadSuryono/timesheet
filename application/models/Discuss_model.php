@@ -5,12 +5,7 @@ class Discuss_model extends CI_Model
 {
 	public function getInformationTask($idTask)
 	{
-		// 	SELECT a.*, b.daritanggal, b.sampaitanggal, d.deskripsi, d.no as no_pekerjaan, e.status as status_string, e.status_perpanjang FROM tkmstaff a 
-		// JOIN tkmdivisi b ON a.idtkmdiv = b.no 
-		// LEFT JOIN pekerjaan d ON a.idtkmdiv = d.idtkmdiv AND a.project = d.project
-		// JOIN rincian e ON a.no=e.id_tkmstaff AND d.no=e.idpekerjaan
-		// where a.no = '2207'
-		$this->db->select('a.*, f.nama_user as user_leader, g.nama_user as user_created, b.divisi, b.daritanggal, b.sampaitanggal, d.deskripsi, d.no as no_pekerjaan, e.status as status_string, e.status_perpanjang');
+		$this->db->select('a.*, g.nama_user as user_leader, f.nama_user as user_created, b.divisi, b.daritanggal, b.sampaitanggal, d.deskripsi, d.no as no_pekerjaan, e.status as status_string, e.status_perpanjang');
 		$this->db->from('tkmstaff a');
 		$this->db->join('tkmdivisi b', 'a.idtkmdiv = b.no', 'left');
 		$this->db->join('pekerjaan d', 'a.idtkmdiv = d.idtkmdiv AND a.project = d.project');
@@ -32,9 +27,9 @@ class Discuss_model extends CI_Model
 	{
 		$this->db->select('a.*, b.nama_user as created_by, c.nama_user as updated_by, d.nama_user as mentor');
 		$this->db->from('tb_discuss a');
-		$this->db->join('tb_user b', 'a.created_by = b.no_user');
-		$this->db->join('tb_user c', 'a.updated_by = c.no_user');
-		$this->db->join('tb_user d', 'a.id_user_mentor = d.no_user');
+		$this->db->join('tb_user b', 'a.created_by = b.no_user', 'left');
+		$this->db->join('tb_user c', 'a.updated_by = c.no_user', 'left');
+		$this->db->join('tb_user d', 'a.id_user_mentor = d.no_user', 'left');
 		$this->db->where('a.id_task', $idTask);
 
 		$query = $this->db->get();
