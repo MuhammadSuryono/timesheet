@@ -33,6 +33,11 @@
           <li class="<?php echo $this->uri->segment(2) == 'waitinglist' ? 'active': '' ?> "><a class="nav-link" href="<?php echo base_url('harian/waitinglist')?>">Draft Waiting List</a></li>
           <div class="divider"></div>
           <li class="<?php echo $this->uri->segment(2) == 'homemingguan' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/homemingguan')?>">Target Kerja Mingguan</a></li>
+          <?php if($this->session->userdata('ses_akses') == 'Manager') { ?>
+            <li class="<?php echo $this->uri->segment(2) == 'rekap_pekerjaanhead' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/rekap_pekerjaanhead')?>">Rekap Pekerjaan</a></li>
+          <?php } else if($this->session->userdata('ses_akses') == 'Pegawai'){ ?>
+            <li class="<?php echo $this->uri->segment(2) == 'rekap_pekerjaan' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/rekap_pekerjaan')?>">Rekap Pekerjaan</a></li>
+          <?php } ?>
           <!-- <li class="<?php echo $this->uri->segment(2) == 'viewharian2' ? 'active': '' ?> "><a class="nav-link" href="<?php echo base_url('harian/viewharian2')?>">Laporan Kerja Harian</a></li> -->
           <div class="divider"></div>
 
@@ -43,6 +48,11 @@
           <li class="<?php echo $this->uri->segment(2) == 'homemingguan' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/homemingguan')?>">Target Kerja Mingguan</a></li>
           <div class="divider"></div>
           <!-- <li class="<?php echo $this->uri->segment(2) == 'viewharian2' ? 'active': '' ?> "><a class="nav-link" href="<?php echo base_url('harian/viewharian2')?>">Laporan Kerja Harian</a></li> -->
+          <?php if($this->session->userdata('ses_akses') == 'Manager') { ?>
+            <li class="<?php echo $this->uri->segment(2) == 'rekap_pekerjaanhead' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/rekap_pekerjaanhead')?>">Rekap Pekerjaan</a></li>
+          <?php } else if($this->session->userdata('ses_akses') == 'Pegawai'){ ?>
+            <li class="<?php echo $this->uri->segment(2) == 'rekap_pekerjaan' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/rekap_pekerjaan')?>">Rekap Pekerjaan</a></li>
+          <?php } ?>
           <div class="divider"></div>
 
           <?php
@@ -103,6 +113,8 @@
           <!-- <li class="<?php echo $this->uri->segment(2) == 'listtkmdivisi' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/listtkmdivisi')?>"> List TKM</a></li> -->
           <li class="<?php echo $this->uri->segment(2) == 'laporantimesheet' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/laporantimesheet')?>"> Laporan Timesheet</a></li>
           <li class="<?php echo $this->uri->segment(2) == 'laporantimesheet' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/laporanpayrol')?>"> Laporan Payrol</a></li>
+          <li class="<?php echo $this->uri->segment(2) == 'rekap_pekerjaanhead' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/rekap_pekerjaanhead')?>"> Rekap Pekerjaan</a></li>
+
         </ul>
       </li>
       <?php
@@ -118,6 +130,7 @@
           <li class="<?php echo $this->uri->segment(2) == 'viewharian2' ? 'active': '' ?> "><a class="nav-link" href="<?php echo base_url('harian/viewharian2')?>">Laporan Kerja Harian</a></li>
           <li class="<?php echo $this->uri->segment(2) == 'laporantimesheet' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/laporantimesheet')?>"> Laporan Timesheet</a></li>
           <li class="<?php echo $this->uri->segment(2) == 'laporantimesheet' ? 'active': '' ?>"><a class="nav-link" href="<?php echo base_url('mingguan/laporanpayrol')?>"> Laporan Payrol</a></li>
+
         </ul>
       </li>
       <?php

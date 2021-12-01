@@ -183,4 +183,37 @@ class Dashboard extends CI_Controller
   }
     echo json_encode($data);
   }
+
+
+  public function getrekap_name()
+  {
+    $id_user = $_POST['id_user'];
+    $time = strtotime("-14 days", time());
+    $daritanggal = date("Y-m-d", $time);
+    $sampaitanggal = date("Y-m-d");
+    
+
+     $data = $this->db->query("SELECT
+                                                a.*,
+                                              --  SUM(c.persentase) AS sumper,
+                                                d.deskripsi, 
+                                              d.no as no_pekerjaan,
+                                              b.daritanggal,
+                                              b.sampaitanggal,
+                                              e.*
+                                              FROM
+                                                tkmstaff a
+                                              JOIN tkmdivisi b ON a.idtkmdiv = b.no
+                                              -- LEFT JOIN tugasharian c ON a.idtkmdiv = c.idtkmdiv
+                                              -- AND a.project = c.project
+                                              LEFT JOIN pekerjaan d ON a.idtkmdiv = d.idtkmdiv AND a.project = d.project
+                                              JOIN rincian e ON a.no=e.id_tkmstaff AND d.no=e.idpekerjaan
+                                              WHERE
+                                                a.userstaff = '$id_user'
+                                                -- AND a.tanggalisi between '$daritanggal' AND '$sampaitanggal'
+                                                AND b.daritanggal between '$daritanggal' AND '$sampaitanggal'
+                                                ")->result_array();
+   
+    echo json_encode($data);
+  }
 }
