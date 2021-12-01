@@ -5,7 +5,7 @@ class Discuss_model extends CI_Model
 {
 	public function getInformationTask($idTask)
 	{
-		$this->db->select('a.*, g.nama_user as user_leader, f.nama_user as user_created, b.divisi, b.daritanggal, b.sampaitanggal, d.deskripsi, d.no as no_pekerjaan, e.status as status_string, e.status_perpanjang');
+		$this->db->select('a.*, e.tanggalupdate as tanggal_input_selesai, e.targetselesai as tanggal_target_seelsai_rincian, g.nama_user as user_leader, f.nama_user as user_created, b.divisi, b.daritanggal, b.sampaitanggal, d.deskripsi, d.no as no_pekerjaan, e.status as status_string, e.status_perpanjang');
 		$this->db->from('tkmstaff a');
 		$this->db->join('tkmdivisi b', 'a.idtkmdiv = b.no', 'left');
 		$this->db->join('pekerjaan d', 'a.idtkmdiv = d.idtkmdiv AND a.project = d.project');
@@ -39,5 +39,13 @@ class Discuss_model extends CI_Model
 		} else {
 			return [];
 		}
+	}
+
+	function createDiscuss($data){
+		return $this->db->insert('tb_discuss',$data);
+	}
+
+	function delete() {
+		
 	}
 }

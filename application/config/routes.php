@@ -52,3 +52,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['discuss/list/task/(:num)'] = 'discuss/list_discuss_task/$1';
+
+$route['api/discuss/create']['post'] = 'discuss/create';
+$route['api/discuss/list/task/(:num)'] = 'api/discuss_task/$1';
+$route['api/user/manager'] = 'api/list_user_manager_user';
+$route['api/discuss/point/task/(:num)'] = 'api/point_task/$1';

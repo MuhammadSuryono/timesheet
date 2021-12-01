@@ -15,7 +15,7 @@
 					<div class="card-header d-flex justify-content-between align-items-center">
 						<h2 class="section-title title-information">Informasi Pekerjaan</h2>
 						<div class="text-right">
-							<div class="numberCircle">100</div>
+							<div class="numberCircle" id="point-task">0</div>
 						</div>
 					</div>
 					<?php 
@@ -72,8 +72,13 @@
 										<td>:</td>
 										<td>&nbsp;<?= $kategoriPekerjaan ?></td>
 									</tr>
-									<tr>
+									<!-- <tr>
 										<td>Keterlambatan Pekerjaan</td>
+										<td>:</td>
+										<td>&nbsp;<?= isset($dataInformationTask['tanggal_input_selesai']) ? $dataInformationTask['tanggal_input_selesai'] : '-' ?></td>
+									</tr> -->
+									<tr>
+										<td>Status Perpanjangan</td>
 										<td>:</td>
 										<td>&nbsp;<?= isset($dataInformationTask['status_perpanjang']) && $dataInformationTask['status_perpanjang'] != "" ? $dataInformationTask['status_perpanjang'] : 'Tidak Ada' ?> <i class="fa fa-question-circle pointer"></i></td>
 									</tr>
@@ -110,7 +115,7 @@
 			<div class="col-lg-12">
 				<div class="card">
 					<div class="card-header">
-						<button class="btn btn-primary" data-toggle="modal" data-target="#createDiscuss"><i class="fa fa-plus"></i> Tambah Diskusi</button>
+						<button class="btn btn-primary" id="btn-create-discuss"><i class="fa fa-plus"></i> Tambah Diskusi</button>
 					</div>
 					<div class="card-body">
 						<div class="row">
@@ -118,7 +123,7 @@
 								<table class="table table-bordered table-hover table-striped" >
 									<thead>
 										<tr class="bg-light text-center">
-											<th>No</th>
+											<th width="5">No</th>
 											<th>Judul Diskusi</th>
 											<th>Diskusi Dengan</th>
 											<th>Dibuat Pada</th>
@@ -148,29 +153,30 @@
 				<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
-			<form action="proses.php" method="POST" enctype="multipart/form-data">
+			<form method="POST" enctype="multipart/form-data">
 			<div class="modal-body">
+				<div id="alert-form"></div>
 				<div class="form-group">
     				<label>Judul Diskusi</label>
-    				<input type="text" class="form-control" id="title_discuss" min="2" placeholder="Judul Diskusi" required>
+    				<input type="text" class="form-control" id="title-discuss" min="2" placeholder="Judul Diskusi" required>
 					<div class="invalid-feedback">
 						Please choose a username.
 					</div>
   				</div>
 				  <div class="form-group">
     				<label>Diskusi Dengan</label>
-    				<select class="form-control" required>
+    				<select class="form-control" id="list-mentor" required>
 						<option>Pilih Mentor Diskusi</option>
 					</select>
   				</div>
-				<div>
+				<!-- <div>
 					<label>Pilih Dokumen Pendukung</label> <br>
-					<input type="file" name="listGambar[]" accept="*" multiple>
+					<input type="file" name="listFile[]" accept="*" id="attachments" multiple>
 					<small id="emailHelp" class="form-text text-muted">Anda dapat menambahkan beberapa file pendukung</small>
-				</div>
+				</div> -->
 				<div class="form-group">
-					<label for="message-text" class="col-form-label">Hasil Diskusi</label>
-					<textarea class="form-control" id="results_discuss" minlength="23"></textarea>
+					<label class="col-form-label">Hasil Diskusi</label>
+					<textarea class="form-control" id="results-discuss" minlength="23"></textarea>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -184,27 +190,56 @@
 
 <script>
 
-	$(document).ready(function() {
-		const bodyTable = document.getElementById("data-diskusi")
-		bodyTable.innerHTML = loadingDataTable();
+	let stateForm = "create"
 
-		getDataDiscussByTask('/api/discuss/2207').then((res) => {
+	$(document).ready(function() {
+		const btnCreateDiscuss = $('#btn-create-discuss')
+		const btnSubmitCreateDiscuss = $('#submitCreateDiscuss');
+		const pathName = window.location.pathname
+		let pathNameSplit = pathName.split("/")
+		let taskId = pathNameSplit[pathNameSplit.length - 1]
+		
+		// setDataTableDiscuss
+		setDataTableDiscuss(taskId)
+		setPointTask(taskId)
+
+		btnCreateDiscuss.click(function() {
+			showModalCreateDiscuss()
+		})
+
+		btnSubmitCreateDiscuss.click(function() {
+			btnSubmitCreateDiscuss.attr('disabled','disabled')
+			btnSubmitCreateDiscuss.html('Menyimpan')
+			submitDiscussTask(taskId, btnSubmitCreateDiscuss)
+		})
+  	});
+
+	function setDataTableDiscuss(taskId) {
+		const bodyTable = document.getElementById("data-diskusi")
+		let delay = 2000
+		let url = '/api/discuss/list/task/' + taskId
+
+		bodyTable.innerHTML = loadingDataTable();
+		httpRequestGet(url).then((res) => {
 			let htmlTableDataDiscuss = ""
 			let data = res.data
 
 			if (data.length > 0) {
 				data.forEach((element, index) => {
-					htmlTableDataDiscuss += `<tr><td class='text-center'>${index + 1}</td><td>${element.title}</td><td>${element.mentor}</td><td class="text-center">${element.created_at}</td><td class="text-center">${element.updated_at}</td><td><button class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>&nbsp;Detail</button></td></tr>`
+					htmlTableDataDiscuss += `<tr><td class='text-center'>${index + 1}</td><td>${element.title}</td><td>${element.mentor}</td><td class="text-center">${element.created_at}</td><td class="text-center">${element.updated_at}</td><td><button class="btn btn-primary btn-sm mr-1"><i class="fa fa-eye"></i>&nbsp;Detail</button><button class="btn btn-success btn-sm mr-1"><i class="fa fa-edit"></i>&nbsp;Edit</button><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;Hapus</button></td></tr>`
 				});	
 				setTimeout(() => {
 					bodyTable.innerHTML = htmlTableDataDiscuss;	
-				}, 2000)		
+				}, delay)		
 			} else {
-				bodyTable.innerHTML = noDataTable();
+				setTimeout(() => {
+					bodyTable.innerHTML = noDataTable();
+				}, delay)
 			}
 				
 		});
-  	});
+
+	}
 
 	function noDataTable() {
 		return '<tr class="text-center" style="border-bottom: 1px solid #F0F8FF;"><th colspan="6"><h6>Data Tidak Tersedia</h6></th></tr>';
@@ -214,10 +249,38 @@
 		return '<tr class="text-center" style="border-bottom: 1px solid #F0F8FF;"><th colspan="6"><div class="item"><i class="loader --1"></i></div></th></tr>';
 	}
 
-	function getDataDiscussByTask(url) {
+	function alertForm(type = "success", message = "") {
+		return `<div class="alert alert-${type}" role="alert">
+						${message}
+					</div>`;
+	}
+
+	function httpRequestGet(url) {
 		return fetch(url)
 			.then((response) => response.json())
 			.then(data => data);
+	}
+
+	function httpRequestPost(url, data) {
+		return fetch(url, {
+			method: 'POST',
+			body: data
+		}).then(res => res.json()).then(data => data)
+	}
+
+	function showModalCreateDiscuss() {
+		showModal('createDiscuss')
+		getUserManager();
+	}
+
+	function showModal(idModal) {
+		const formModal = $(`#${idModal}`)
+		formModal.modal('show')
+	}
+
+	function hideModal(idModal) {
+		const formModal = $(`#${idModal}`)
+		formModal.modal('hide')
 	}
 
 	function backToPreviousPage() {
@@ -235,6 +298,83 @@
 		}
 
 		window.location.href = previousPage
+	}
+
+	function getUserManager() {
+		const optionMentors = document.getElementById("list-mentor")
+		httpRequestGet('/api/user/manager').then((res) => {
+			let data = res.data
+			let options = "<option value='0'>Pilih Mentor Diskusi</option>"
+
+			data.forEach((elm,i) => {
+				let selected = ""
+				if(elm.is_leader) selected = "selected";
+				options += `<option value='${elm.id}' ${selected}>${elm.name}</option>`
+			})
+
+			optionMentors.innerHTML = options;
+
+		})
+	}
+
+	function submitDiscussTask(taskId, elmButtonSubmit) {
+		const titleDiscuss = $('#title-discuss').val();
+		const mentorDiscuss = $('#list-mentor').val();
+		const resultDiscuss = $('#results-discuss').val();
+		const notifAlertForm = document.getElementById('alert-form')
+
+		var formData = new FormData()
+		formData.append('task_id', taskId)
+		formData.append('title_discuss', titleDiscuss)
+		formData.append('mentor_discuss', mentorDiscuss)
+		formData.append('result_discuss', resultDiscuss)
+
+		httpRequestPost('/api/discuss/create', formData).then((res) => {
+			elmButtonSubmit.html('Simpan')
+			if (res.is_success) {
+				notifAlertForm.innerHTML = alertForm("success", res.message);
+				setDataTableDiscuss(taskId)
+				setTimeout(() => {
+					hideModal('createDiscuss')
+				}, 1000)
+			} else {
+				notifAlertForm.innerHTML = alertForm("danger", res.message);
+			}
+		}).catch((e) => {
+			console.warn(e)
+			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
+		})
+	}
+
+	function setPointTask(taskId) {
+		httpRequestGet('/api/discuss/point/task/' + taskId).then((res) => {
+			console.log(res)
+			let data = res.data
+			let point = 100
+			let persentase = parseInt(data.persentase)
+
+			let startDate = Date.parse(data.daritanggal)
+			let endDate = Date.parse(data.sampaitanggal)
+			let lastUpdateDate = Date.parse(data.tanggal_input_selesai)
+			let dateTarget = Date.parse(data.tanggal_target_seelsai_rincian)
+
+			if (lastUpdateDate < endDate) {
+				if (persentase < 100 && lastUpdateDate < dateTarget) {
+					point = persentase
+				} else if (persentase >= 100 && lastUpdateDate < dateTarget) {
+					point = 100
+				}	
+			} else if (lastUpdateDate > endDate) {
+				point = 0
+				if (persentase < 100 && dateTarget > endDate && lastUpdateDate < dateTarget) {
+					point = persentase - 25 <= 0 ? 0 : persentase - 25
+				} else if (persentase >= 100 && dateTarget > endDate && lastUpdateDate < dateTarget) {
+					point = point - 25 <= 0 ? 0 : point - 25
+				}
+			}
+
+			document.getElementById('point-task').innerHTML = '<div>100</div>'
+		})
 	}
 
 </script>

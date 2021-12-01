@@ -2192,7 +2192,7 @@ $(function () {
 	function viewDiscuss(taskId, idPopUp) {
 		setDataToLocalStorage('previous_page', '/dashboard')
 		setDataToLocalStorage('last_popup', idPopUp)
-		window.location.href = `/discuss/create/${taskId}`
+		window.location.href = `/discuss/list/task/${taskId}`
 	}
 
   $(document).ready(function() {
