@@ -1608,6 +1608,59 @@ class Mingguan extends CI_Controller
     
   }
 
+
+  public function rekap_pekerjaan()
+  {
+    $data['judul'] = 'Rekap Pekerjaan';
+    
+
+    $this->load->view('template/header', $data);
+    $this->load->view('template/sidebar');
+    $this->load->view('mingguan/rekap_pekerjaan', $data);
+    $this->load->view('template/footer');
+
+    
+  }
+
+  public function rekap_pekerjaanhead()
+  {
+    $data['judul'] = 'Rekap Pekerjaan';
+    
+
+    $this->load->view('template/header', $data);
+    $this->load->view('template/sidebar');
+    $this->load->view('mingguan/rekap_pekerjaanhead', $data);
+    $this->load->view('template/footer');
+
+    
+  }
+
+  public function kurangi_rekap()
+  {
+    $id_rincian = $this->input->post('id_rincian');
+    $persentase = $this->input->post('persentase_kurang');
+    $alasan = $this->input->post('alasan_kurang');
+
+    $data = ['targetpersen' => $persentase,
+             'alasan_cut' => $alasan
+            ];
+
+    $this->db->update('rincian', $data, ['id_rincian' => $id_rincian]);
+
+    $this->session->set_flashdata('flash2', 'Berhasil Edit Persentase Penyelesaian Pekerjaan');
+    redirect('mingguan/rekap_pekerjaanhead');
+
+  }
+
+  public function getlastsubmit()
+  {
+    $id_rincian = $_POST['id_rincian'];
+
+    $data = $this->db->query("SELECT * FROM tugasharian WHERE id_rincian='$id_rincian' ORDER BY tanggal ASC")->result_array();
+    
+    echo json_encode($data);
+  }
+
   public function absen()
   {
     date_default_timezone_set('Asia/Jakarta');

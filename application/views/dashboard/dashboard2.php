@@ -267,7 +267,8 @@ function getWorkingDays($startDate, $endDate, $holidays)
                   <li><h6 style="font-weight: normal; font-size: 14px; ">
                     <a data-toggle="collapse" href="#<?= $u['id_user'] ?>" role="button" aria-expanded="false" aria-controls="collapseExample" style="color:  #191970;"><?php echo $u['nama_user'] ?> ( <?php echo $u['jabatan1'] ?> ) ( <?php echo $u['divisi'] ?> )
                     </a>
-                     - <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $u['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary" ><?= $jum_target1 ?></span></h6></li>
+                     - <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $u['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary" ><?= $jum_target1 ?></span>
+                   </h6></li>
              
                   <!-- <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary" ><?= $jum_target ?></span> -->
               <div class="collapse" id="<?= $u['id_user'] ?>">
@@ -316,9 +317,13 @@ function getWorkingDays($startDate, $endDate, $holidays)
                                                 AND ((a.tanggalisi between '$bulan3' AND '$datenow') OR e.targetpersen < 100)")->num_rows();
                   if ($get_tolak == NULL) {
                   ?>
-                <li><h6 style="font-weight: normal; font-size: 14px; "><?php echo $key['nama_user'] ?> ( <?php echo $key['jabatan1'] ?> ) - <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $key['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary"><?= $jum_target ?></span></h6></li>
+                <li><h6 style="font-weight: normal; font-size: 14px; "><?php echo $key['nama_user'] ?> ( <?php echo $key['jabatan1'] ?> ) - 
+                  <a href="<?= base_url('mingguan/rekap_pekerjaan') ?>" >Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary"><?= $jum_target ?></span>
+                </h6></li>
               <?php } else { ?>
-                <li><h6 style="font-weight: normal; font-size: 14px; "><?php echo $key['nama_user'] ?> ( <?php echo $key['jabatan1'] ?> ) - <a href="#" type="button" class="faa-flash animated" data-toggle="modal" data-target="#detailkerja<?php echo $key['id_user'] ?>">Target Kerja<span class="text-danger">*</span></a>&nbsp;&nbsp;<span class="badge badge-primary"><?= $jum_target ?></span></h6></li>
+                <li><h6 style="font-weight: normal; font-size: 14px; "><?php echo $key['nama_user'] ?> ( <?php echo $key['jabatan1'] ?> ) - 
+                  <!-- <a href="#" type="button" class="faa-flash animated" data-toggle="modal" data-target="#detailkerja<?php echo $key['id_user'] ?>">Target Kerja<span class="text-danger">*</span></a>&nbsp;&nbsp;<span class="badge badge-primary"><?= $jum_target ?></span> -->
+                </h6></li>
               <?php
                     }
                   endif;
@@ -379,7 +384,7 @@ function getWorkingDays($startDate, $endDate, $holidays)
               ?>
               
                 <li><h6 style="font-weight: normal; font-size: 14px; "><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> ) - 
-                  <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary" ><?= $jum_target ?></span> -  
+                  <!-- <a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>">Target Kerja</a>&nbsp;&nbsp;<span class="badge badge-primary" ><?= $jum_target ?></span> -   -->
                   <!-- <a href="#" type="button" class="portfolio-link" data-toggle="modal" data-target="#tindaklanjut<?php echo $ad['id_user'] ?>"> 
                   <i class="fas fa-cog"></i></a> -->
                   <a href="#" type="button" class="portfolio-link" data-toggle="modal" data-target="#tindaklanjut<?php echo $ad['id_user'] ?>"> 
@@ -404,9 +409,10 @@ function getWorkingDays($startDate, $endDate, $holidays)
                  
                     if ($get_tolak == NULL) {
                      ?>
-                    <li><a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>"><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )</a></li>
+                    <!-- <li><a href="#" type="button" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>"><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )</a></li> -->
+                    <li><a href="<?= base_url('mingguan/rekap_pekerjaan') ?>"><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )</a></li>
                   <?php } else { ?>
-                    <li><a href="#" type="button" class="faa-flash animated" data-toggle="modal" data-target="#detailkerja<?php echo $ad['id_user'] ?>"><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )<span class="text-danger">*</span> </a></li>
+                    <li><a href="<?= base_url('mingguan/rekap_pekerjaan') ?>"><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )<span class="text-danger">*</span> </a></li>
               <?php }
                } else { ?>
                  <li><?php echo $ad['nama_user'] ?> ( <?php echo $ad['jabatan1'] ?> )</li>

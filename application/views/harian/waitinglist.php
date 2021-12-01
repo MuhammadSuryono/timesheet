@@ -363,7 +363,7 @@
           </table>
           <div class="text-right">
             <input type="checkbox" id="all_check" onchange="checkAll(this)"> <b>Setujui Semua</b>
-            <input type="submit" name="submit" value="Approve" class="btn btn-success">
+            <input type="submit" name="submit" value="Submit" class="btn btn-success">
           </div>
           </form>
           </div>
