@@ -6,6 +6,7 @@ class Discuss extends MY_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Discuss_model');
+		$this->load->model('Pinalti_model');
 	}
 
 	public function list_discuss_task($idTask) {
@@ -22,6 +23,7 @@ class Discuss extends MY_Controller {
 		$this->load->view('discuss/index', $data);
 		$this->load->view('template/sidebar');
 		$this->load->view('template/footer');
+		
 	}
 
 	public function create() {
@@ -37,14 +39,64 @@ class Discuss extends MY_Controller {
 		$isCreated = $this->Discuss_model->createDiscuss($data);
 		if ($isCreated) {
 			echo json_encode($this->response(200, "Berhasil Simpan Data Diskusi"));
-			# code...
 		} else {
 			echo json_encode($this->response(500, "Gagal Simpan Data Diskusi"));
 		}
 	}
 
-	public function delete($idDiscuss) {
+	public function update($id) {
+		$data = array(
+			'id_user_mentor' => $this->input->post('mentor_discuss'),
+			'title' => $this->input->post('title_discuss'),
+			'discussion_results' => $this->input->post('result_discuss'),
+			'updated_by' => $this->session->userdata('ses_id'),
+			);
 		
+		$isUpdated = $this->Discuss_model->updateDiscuss($id, $data);
+		if ($isUpdated) {
+			echo json_encode($this->response(200, "Berhasil Update Data Diskusi", $data));
+		} else {
+			echo json_encode($this->response(500, "Gagal Update Data Diskusi"));
+		}
+	}
+
+	public function delete($idDiscuss) {
+		$isDeleted = $this->Discuss_model->delete($idDiscuss);
+		if ($isDeleted) {
+			echo json_encode($this->response(200, "Berhasil Delete Data Diskusi"));
+		} else {
+			echo json_encode($this->response(500, "Gagal Delete Data Diskusi"));
+		}
+	}
+
+	public function add_data_pinalti($idTask, $description = "") {
+		$atasanId = $this->session->userdata('ses_atasan');
+		$idUser = $this->session->userdata('ses_id');
+		$pinaltiModel = $this->Pinalti_model;
+
+		$pinalti = $pinaltiModel->get_pinalti_by_task_id($idTask);
+		$isAlreadyPinalti = count($pinalti) > 0;
+
+		$data = [
+			"id_task" => $idTask,
+			"id_staff" => $idUser,
+			"id_leader" => $atasanId,
+			'description' => $description,
+		];
+
+
+		if ($isAlreadyPinalti) {
+			return true;
+		} else {
+			$isCreated = $pinaltiModel->create($data);
+			return $isCreated;
+		}
+	}
+
+	public function get_discuss_by_id($id) {
+		$discussModel =  $this->Discuss_model;
+		$discuss = $discussModel->getDiscussById($id);
+		echo json_encode($this->response(200, "Success retrieve data", $discuss));
 	}
 }
 

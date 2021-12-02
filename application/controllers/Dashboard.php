@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+include_once (dirname(__FILE__) . "/Api.php");
 
-class Dashboard extends CI_Controller
+class Dashboard extends Api
 {
 
   public function __construct()
@@ -180,8 +181,15 @@ class Dashboard extends CI_Controller
                                                 a.userstaff = '$id_user'
                                                 AND (a.tanggalisi between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
                                                 ")->result_array();
-  }
-    echo json_encode($data);
+		}
+
+		$arrayNew = [];
+		for ($i=0; $i < count($data); $i++) { 
+			$data[$i]['point_task'] = $this->point_task($data[$i]['no'], "text", true);
+			array_push($arrayNew, $data[$i]);
+		}
+  
+    echo json_encode($arrayNew);
   }
 
 
