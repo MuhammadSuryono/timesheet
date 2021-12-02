@@ -56,6 +56,9 @@ $route['translate_uri_dashes'] = FALSE;
 $route['discuss/list/task/(:num)'] = 'discuss/list_discuss_task/$1';
 
 $route['api/discuss/create']['post'] = 'discuss/create';
+$route['api/discuss/update/(:num)']['put'] = 'discuss/update/$1';
 $route['api/discuss/list/task/(:num)'] = 'api/discuss_task/$1';
 $route['api/user/manager'] = 'api/list_user_manager_user';
 $route['api/discuss/point/task/(:num)'] = 'api/point_task/$1';
+$route['api/discuss/delete/task/(:num)']['delete'] = 'discuss/delete/$1';
+$route['api/discuss/task/(:num)']['get'] = 'discuss/get_discuss_by_id/$1';
