@@ -102,6 +102,7 @@
                 <th class="no">No</th>
                 <th class="rincian">Rincian</th>
                 <th class="persen">Persentase</th>
+								<th class="persen">Poin Penilaian</th>
                 <th class="status">Status</th>
                 <th class="target">Target Selesai</th>
                 <th class="target">Detail</th>
@@ -355,6 +356,7 @@ $(document).ready(function(){
                     	<a href="#" type="button" data-toggle="modal" data-target="#pengurangan" onclick="kurangiRekap('`+hasil[i]['id_rincian']+`', '`+hasil[i]['targetpersen']+`', '`+hasil[i]['rincian']+`')"><i class="fas fa-edit"></i></a>
                 </center></td>`;
               }
+								ht += '<td class="text-center">'+hasil[i].point_task+'</td>';
                 ht += `<td>`+hasil[i]['status']+`</td>
                       <td>`+tanggal+`</td>
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
@@ -437,6 +439,7 @@ $(document).ready(function(){
 
                    }
                  ht += `</td>
+								 <td><button onclick="viewDiscuss(${hasil[i]["no"]})" class="btn btn-primary btn-sm btn-view-discuss"><i class="fa fa-comments"></i>&nbsp;Lihat Diskusi</button></td>
               
             </tr>`;
               }

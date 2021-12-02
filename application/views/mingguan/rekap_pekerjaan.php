@@ -1,6 +1,7 @@
 
 <?php 
  $user = $this->session->userdata('ses_username');
+ $CI =& get_instance();
 ?>
 <!-- Main Content -->
 <style type="text/css">
@@ -98,11 +99,13 @@
                 <th class="no">No</th>
                 <th class="rincian">Rincian</th>
                 <th class="persen">Persentase</th>
+								<th class="persen">Poin Penilaian</th>
                 <th class="status">Status</th>
                 <th class="target">Target Selesai</th>
                 <th class="target">Detail</th>
                 <th class="pencapaian">Pencapaian</th>
                 <th class="approval">Approval</th>
+                <th class="approval">Aksi</th>
               </tr>
             <!-- <tr>
               <th colspan="2">TKM</th>
@@ -137,6 +140,7 @@
             <?php } else { ?>
               <td><center><?php echo $data['targetpersen']; ?>%</center></td>
             <?php } ?>
+						<td class="text-center"><?= $CI->point_task($data['no'], "text") ?></td>
               <td><?php echo $data['status']; ?></td>
               <td><?php echo date('d-m-Y', strtotime($data['targetselesai']));
                   if ($akses == 'Manager') {
@@ -224,6 +228,10 @@
 
                    } ?>
                  </td>
+
+								 <td>
+									 <button onclick="viewDiscuss(<?=$data['no'] ?>)" class="btn btn-primary btn-sm btn-view-discuss"><i class="fa fa-comments"></i>&nbsp;Lihat Diskusi</button>
+								 </td>
               
             </tr>
 
@@ -327,6 +335,42 @@
 
 <script type="text/javascript">
 
+	$(document).ready(function() {
+		var isAvailableLastData = getParameterByName('lastData')
+			
+		if (isAvailableLastData === 'true') {
+			var idUser = getParameterByName('idUser')
+			var startDate = getParameterByName('startDate')
+			var endDate = getParameterByName('endDate')
+			var keyword = getParameterByName('keyword')
+			var isSearch = getParameterByName('isSearch')
+
+			if (isSearch === 'true') {
+				searchData(idUser, startDate, endDate, keyword)
+			}
+
+			setDataToLocalStorage('search_data_rekap', '')
+		}
+	})
+
+	function setDataToLocalStorage(key, data) {
+		 window.localStorage.setItem(key, data)
+	 }
+
+	function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+	}
+
+	function viewDiscuss(taskId) {
+		setDataToLocalStorage('previous_page', '/mingguan/rekap_pekerjaan')
+		window.location.href = '/discuss/list/task/' + taskId
+	}
+
 function detailnya(id){
   console.log(id);
   var id_rincian = id;
@@ -384,10 +428,14 @@ function detailnya(id){
   });
 }
 
- function searchData(id_user){
+ function searchData(id_user, startDate = "", endDate = "", keyword = ""){
     var daritanggal = $('#daritanggal'+id_user).val();
     var sampaitanggal = $('#sampaitanggal'+id_user).val();
     var katakunci = $('#katakunci'+id_user).val();
+
+		katakunci = keyword !== "" ? keyword : katakunci
+		daritanggal = startDate !== "" ? startDate : daritanggal
+		sampaitanggal = endDate !== "" ? endDate : sampaitanggal
 
     var akses = $('#aksesnya').val();
     var usernya = $('#usernya').val();
@@ -396,9 +444,13 @@ function detailnya(id){
          var host = base + window.location.pathname.split('/')[1];
 
     $('#datanya'+id_user).empty();
-    console.log(id_user);
-    console.log(daritanggal);
-    console.log(sampaitanggal);
+		setDataToLocalStorage('search_data_rekap', JSON.stringify({
+							is_search: true,
+             id_user: id_user,
+             daritanggal: daritanggal,
+             sampaitanggal: sampaitanggal,
+             katakunci: katakunci
+           }))
     $.ajax({
            url: "<?php echo base_url('dashboard/getrekap') ?>",
            method: "POST",
@@ -434,6 +486,7 @@ function detailnya(id){
               } else {
                 ht +=`<td><center>`+hasil[i]['targetpersen']+`%</center></td>`;
               }
+								ht += '<td class="text-center">'+hasil[i].point_task+'</td>';
                 ht += `<td>`+hasil[i]['status']+`</td>
                       <td>`+tanggal+`</td>
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
@@ -516,6 +569,7 @@ function detailnya(id){
 
                    }
                  ht += `</td>
+								 <td><button onclick="viewDiscuss(${hasil[i]["no"]})" class="btn btn-primary btn-sm btn-view-discuss"><i class="fa fa-comments"></i>&nbsp;Lihat Diskusi</button></td>
               
             </tr>`;
               }
