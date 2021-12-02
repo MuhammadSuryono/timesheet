@@ -45,7 +45,39 @@ class Discuss_model extends CI_Model
 		return $this->db->insert('tb_discuss',$data);
 	}
 
-	function delete() {
-		
+	function delete($id) {
+		return $this->db->delete('tb_discuss', array('id' => $id));
+	}
+
+	public function getDiscussByTaskIdRangeDate($idTask, $startDate, $endDate)
+	{
+		$this->db->where('id_task', $idTask);
+		$this->db->where('created_at >=', $startDate);
+		$this->db->where('created_at <=', $endDate);
+		$query = $this->db->get('tb_discuss');
+
+		if ($query->num_rows() != 0) {
+			return $query->result_array();		
+		} else {
+			return [];
+		}
+	}
+
+	public function updateDiscuss($id, $data) 
+	{		
+		$this->db->where('id', $id);
+		return $this->db->update('tb_discuss', $data);
+	}
+
+	public function getDiscussById($id)
+	{
+		$this->db->where('id', $id);
+		$query = $this->db->get('tb_discuss');
+
+		if ($query->num_rows() != 0) {
+			return $query->result_array()[0];		
+		} else {
+			return [];
+		}
 	}
 }
