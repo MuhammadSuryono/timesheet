@@ -270,11 +270,11 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 <script type="text/javascript">
 
 	let stateForm = "create"
+	let BASE_URL = '<?= base_url() ?>'
 	let stateIdDiscuss = 0;
 	let stateTaskId = 0;
 	let isManagement = document.getElementById("status-management").value === "0" ? false : document.getElementById("status-management").value === "1" ? true : false
 	$(document).ready(function() { 
-		console.log(isManagement)
 		const btnCreateDiscuss = $('#btn-create-discuss')
 		const btnSubmitCreateDiscuss = $('#submitCreateDiscuss');
 		const btnSubmitUploadAttachment = $('#submitUploadFile')
@@ -304,7 +304,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	function setDataTableDiscuss(taskId) {
 		const bodyTable = document.getElementById("data-diskusi")
 		let delay = 2000
-		let url = '/api/discuss/list/task/' + taskId
+		let url = `api/discuss/list/task/${taskId}`
 
 		bodyTable.innerHTML = loadingDataTable();
 		httpRequestGet(url).then((res) => {
@@ -360,12 +360,14 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	}
 
 	function httpRequestGet(url) {
+		url = `${BASE_URL}${url}`
 		return fetch(url)
 			.then((response) => response.json())
 			.then(data => data);
 	}
 
 	function httpRequest(url, data, method = "POST") {
+		url = `${BASE_URL}${url}`
 		return fetch(url, {
 			method: method,
 			body: data
@@ -394,9 +396,9 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 
 		if (previousPage === undefined || previousPage === null || previousPage == "") {
 			if (isManagement) {
-				previousPage = "/mingguan/rekap_pekerjaanhead"
+				previousPage = `${BASE_URL}mingguan/rekap_pekerjaanhead`
 			} else {
-				previousPage = "/mingguan/rekap_pekerjaan"
+				previousPage = `${BASE_URL}mingguan/rekap_pekerjaan`
 			}
 		}
 
@@ -414,7 +416,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 
 	function getUserManager(idMentor = 0) {
 		const optionMentors = document.getElementById("list-mentor")
-		httpRequestGet('/api/user/manager').then((res) => {
+		httpRequestGet('api/user/manager').then((res) => {
 			let data = res.data
 			let options = "<option value='0'>Pilih Mentor Diskusi</option>"
 
@@ -442,10 +444,10 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 		formData.append('mentor_discuss', mentorDiscuss)
 		formData.append('result_discuss', resultDiscuss)
 
-		let pathSubmit = '/api/discuss/create'
+		let pathSubmit = 'api/discuss/create'
 		let method = "POST"
 		if (stateForm === "update") {
-			pathSubmit = '/api/discuss/update/' + stateIdDiscuss;
+			pathSubmit = 'api/discuss/update/' + stateIdDiscuss;
 			method = "PUT"
 		}
 
@@ -475,7 +477,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 
 	function setPointTask(taskId) {
 		const pointElement = document.getElementById('point-task').innerHTML
-		httpRequestGet('/api/discuss/point/task/' + taskId).then((res) => {
+		httpRequestGet('api/discuss/point/task/' + taskId).then((res) => {
 			$('#point-task').html(res.data)
 		})
 	}
@@ -488,7 +490,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 				setTimeout(() => {
 					hideModal("loading-prosess")
 				}, 5000)
-				httpRequest('/api/discuss/delete/task/' +id, [], "DELETE").then((res) => {
+				httpRequest('api/discuss/delete/task/' +id, [], "DELETE").then((res) => {
 					if (res.is_success) {
 						setDataTableDiscuss(taskId)
 						setTimeout(() => {
@@ -528,7 +530,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	function getDetailDiscuss(id) {
 		const content = document.getElementById("content-discuss")
 		showModal("detail-discuss")
-		httpRequestGet('/api/discuss/task/' + id).then((res) => {
+		httpRequestGet('api/discuss/task/' + id).then((res) => {
 			let data = res.data
 			content.innerHTML = `<p>${data.discussion_results}`;
 
@@ -540,7 +542,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 		stateForm = "update"
 		stateIdDiscuss = id
 
-		httpRequestGet('/api/discuss/task/' + id).then((res) => {
+		httpRequestGet('api/discuss/task/' + id).then((res) => {
 			let data = res.data
 			if (res.is_success) {
 				document.getElementById("title-discuss").value = data.title;
@@ -559,7 +561,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 
 	function deleteAttachment(id, discussId) {
 		const notifAlertForm = document.getElementById('alert-form-attachment')
-		httpRequest('/api/attachment/delete/' +id, [], "DELETE").then((res) => {
+		httpRequest('api/attachment/delete/' +id, [], "DELETE").then((res) => {
 			if (res.is_success) {
 				setListAttachments(discussId)
 				notifAlertForm.innerHTML = alertForm("success", res.message)
@@ -585,7 +587,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	function setListAttachments(discussId) {
 		const optionMentors = document.getElementById("list-attachments")
 		optionMentors.innerHTML = loadingContent();
-		httpRequestGet('/api/attachment/list/discuss/' + discussId).then((res) => {
+		httpRequestGet('api/attachment/list/discuss/' + discussId).then((res) => {
 			let data = res.data
 			let lists = ""
 			data.forEach((elm,i) => {
@@ -635,8 +637,9 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	function uploadFile(file) {
 		const fd = new FormData();
 		fd.append('file', file);
+		let url = `${BASE_URL}api/attachment/upload/task/${stateTaskId}/discuss/${stateIdDiscuss}`
 
-		return fetch('/api/attachment/upload/task/' + stateTaskId + '/discuss/' + stateIdDiscuss, {
+		return fetch(url, {
 			method: 'POST',
 			body: fd
 		})
