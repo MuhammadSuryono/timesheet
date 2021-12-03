@@ -636,7 +636,20 @@ function getWorkingDays($startDate, $endDate, $holidays)
               <h4>Kedisiplinan Isi LKH</h4>
             </div>
             <div class="card-body">
-            
+
+						<?php if ($total_pinalti > 0) { ?>
+						<a class="text-danger" data-toggle="collapse" href="#pinalti" role="button" aria-expanded="false" aria-controls="collapseExample"><p class="text-danger font-weight-bold faa-flash animated ">Teguran Pinalti <?= $total_pinalti ?></p></a>
+						<div class="collapse" id="pinalti">
+							<p>Saudara/i mendapatkan teguran pinalti diakibatkan tidak menyelesaikan beberapa task tersebut dibawah ini: </p>
+							<ul>
+								<?php 
+									foreach($data_pinalties as $pinalti) {
+										echo "<li><a href='discuss/list/task/$pinalti[id_task]'>#$pinalti[id_task]</a> ($pinalti[description])</li>";
+									}
+								?>
+							</ul>
+            </div>
+            <?php } ?>
             <?php if ($totaltidakisi == 0) { ?>
               <div style="width: 100%; text-align: center;">
                 <i class="text-success fas fa-thumbs-up fa-10x faa-flash animated" style="font-size: 100px;"></i>
@@ -2164,6 +2177,7 @@ $(function () {
   $(document).ready(function() {
     var cek = document.getElementById('num_disclaimer').value;
 		var isAvailableLastData = getParameterByName('lastData')
+		window.localStorage.setItem('previous_page', "")
 		
 		if (isAvailableLastData === 'true') {
 			let lastPopUp = window.localStorage.getItem('last_popup')

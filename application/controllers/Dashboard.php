@@ -9,6 +9,7 @@ class Dashboard extends Api
   {
     parent::__construct();
     $this->load->model('Dashboard_model');
+    $this->load->model('Pinalti_model');
     //Codeigniter : Write Less Do More
     if (!$this->session->userdata('ses_username')) {
       redirect('auth');
@@ -20,6 +21,8 @@ class Dashboard extends Api
 
     $divisi = $this->session->userdata('ses_divisi');
     $nama = $this->session->userdata('ses_username');
+		$idLeader = $this->session->userdata('ses_atasan');
+		$idUser = $this->session->userdata('ses_id');
 
 
     $data['direksinya'] = $this->db->query("SELECT atasan FROM tb_user WHERE divisi='$divisi' AND jabatan1='Leader 1'")->row_array();
@@ -45,6 +48,12 @@ class Dashboard extends Api
                                             AND jabatan1 ='Staff' OR 
                                             atasan='$nama' GROUP BY id_user ORDER BY nama_user")->result_array();
     $data['judul'] = 'MRI TIMESHEET WFH';
+
+
+		$pinaltiTasks = $this->Pinalti_model->get_pinalti_by_user($idUser, $idLeader);
+
+		$data['total_pinalti'] = count($pinaltiTasks);
+		$data['data_pinalties'] = $pinaltiTasks;
 
     $this->load->view('template/header', $data);
     $this->load->view('dashboard/dashboard2', $data);
