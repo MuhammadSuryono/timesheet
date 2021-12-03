@@ -550,6 +550,7 @@ $(document).ready(function(){
                     	<a href="#" type="button" data-toggle="modal" data-target="#pengurangan" onclick="kurangiRekap('`+hasil[i]['id_rincian']+`', '`+hasil[i]['targetpersen']+`', '`+hasil[i]['rincian']+`')"><i class="fas fa-edit"></i></a>
                 </center></td>`;
               }
+                ht += '<td class="text-center">'+hasil[i].point_task+'</td>';
                 ht += `<td>`+hasil[i]['status']+`</td>
                       <td>`+tanggal+`</td>
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>

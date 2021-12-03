@@ -63,9 +63,9 @@ class Api extends Discuss
 		$weekDateTarget = $this->getNumberOfWeek($data['tanggal_target_seelsai_rincian']);
 
 		$dayInput = $this->getDayNameOfDate($dateInput);
-		// if (!in_array($dayInput, ["Saturday", "Friday", "Sunday"]) && $weekInput != $weekDateTarget) {
-		// 	$weekInput = $weekInput + 1;
-		// }
+		if (!in_array($dayInput, ["Saturday", "Friday", "Sunday"]) && $weekInput != $weekDateTarget) {
+			$weekInput = $weekInput + 1;
+		}
 
 		if (in_array($dayInput, ["Saturday", "Friday", "Sunday"])) {
 			$weekInput = $weekInput + 1;
