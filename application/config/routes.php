@@ -52,3 +52,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['discuss/list/task/(:num)'] = 'discuss/list_discuss_task/$1';
+
+$route['api/discuss/create']['post'] = 'discuss/create';
+$route['api/discuss/update/(:num)']['put'] = 'discuss/update/$1';
+$route['api/discuss/list/task/(:num)'] = 'api/discuss_task/$1';
+$route['api/user/manager'] = 'api/list_user_manager_user';
+$route['api/discuss/point/task/(:num)'] = 'api/point_task/$1';
+$route['api/discuss/delete/task/(:num)']['delete'] = 'discuss/delete/$1';
+$route['api/discuss/task/(:num)']['get'] = 'discuss/get_discuss_by_id/$1';
+
+
+$route['api/attachment/upload/task/(:num)/discuss/(:num)']['post'] = 'discuss/upload_attachment/$1/$2';
+$route['api/attachment/list/discuss/(:num)']['get'] = 'discuss/get_attachment_by_discuss_id/$1';
+$route['api/attachment/delete/(:num)']['delete'] = 'discuss/delete_attachment/$1';

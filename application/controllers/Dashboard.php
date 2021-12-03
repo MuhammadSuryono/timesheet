@@ -1,13 +1,15 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+include_once (dirname(__FILE__) . "/Api.php");
 
-class Dashboard extends CI_Controller
+class Dashboard extends Api
 {
 
   public function __construct()
   {
     parent::__construct();
     $this->load->model('Dashboard_model');
+    $this->load->model('Pinalti_model');
     //Codeigniter : Write Less Do More
     if (!$this->session->userdata('ses_username')) {
       redirect('auth');
@@ -19,6 +21,8 @@ class Dashboard extends CI_Controller
 
     $divisi = $this->session->userdata('ses_divisi');
     $nama = $this->session->userdata('ses_username');
+		$idLeader = $this->session->userdata('ses_atasan');
+		$idUser = $this->session->userdata('ses_id');
 
 
     $data['direksinya'] = $this->db->query("SELECT atasan FROM tb_user WHERE divisi='$divisi' AND jabatan1='Leader 1'")->row_array();
@@ -44,6 +48,12 @@ class Dashboard extends CI_Controller
                                             AND jabatan1 ='Staff' OR 
                                             atasan='$nama' GROUP BY id_user ORDER BY nama_user")->result_array();
     $data['judul'] = 'MRI TIMESHEET WFH';
+
+
+		$pinaltiTasks = $this->Pinalti_model->get_pinalti_by_user($idUser, $idLeader);
+
+		$data['total_pinalti'] = count($pinaltiTasks);
+		$data['data_pinalties'] = $pinaltiTasks;
 
     $this->load->view('template/header', $data);
     $this->load->view('dashboard/dashboard2', $data);
@@ -183,8 +193,15 @@ class Dashboard extends CI_Controller
                                                 AND (b.daritanggal between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
                                             
                                                 ")->result_array();
-  }
-    echo json_encode($data);
+		}
+
+		$arrayNew = [];
+		for ($i=0; $i < count($data); $i++) { 
+			$data[$i]['point_task'] = $this->point_task($data[$i]['no'], "text", true);
+			array_push($arrayNew, $data[$i]);
+		}
+  
+    echo json_encode($arrayNew);
   }
 
 

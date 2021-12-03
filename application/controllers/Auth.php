@@ -47,6 +47,7 @@ class Auth extends CI_Controller
       $this->session->set_userdata('ses_akses', $data['hak_akses']);
       $this->session->set_userdata('ses_jabatan', $data['jabatan1']);
       $this->session->set_userdata('ses_id', $data['no_user']);
+			$this->session->set_userdata('ses_atasan', $data['atasan']);
       
       if (isset($_POST['remember_me'])) {
           // buat coockie

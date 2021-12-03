@@ -474,11 +474,13 @@ function getWorkingDays($startDate, $endDate, $holidays)
       if ($getTglMasukKerja['tgl_masuk'] <= $endDate) {
         $sudahMasuk = true;
         $cekTglMasukKerja = $this->db->query("SELECT tgl_masuk FROM tb_user WHERE id_user = '$user' AND STR_TO_DATE(tgl_masuk, '%Y-%m-%d') BETWEEN '$startDate' AND STR_TO_DATE('$endDate','%Y-%m-%d')")->row_array();
-        if ($startDate >= $cekTglMasukKerja['tgl_masuk']) {
-          $startDate = $startDate;
-        } else {
-          $startDate = $cekTglMasukKerja['tgl_masuk'];
-        }
+        if (isset($cekTglMasukKerja)) {
+					if ($startDate >= $cekTglMasukKerja['tgl_masuk']) {
+						$startDate = $startDate;
+					} else {
+						$startDate = $cekTglMasukKerja['tgl_masuk'];
+					}
+				}
       } else {
         $sudahMasuk = false;
         $startDate = $getTglMasukKerja['tgl_masuk'];
@@ -634,7 +636,20 @@ function getWorkingDays($startDate, $endDate, $holidays)
               <h4>Kedisiplinan Isi LKH</h4>
             </div>
             <div class="card-body">
-            
+
+						<?php if ($total_pinalti > 0) { ?>
+						<a class="text-danger" data-toggle="collapse" href="#pinalti" role="button" aria-expanded="false" aria-controls="collapseExample"><p class="text-danger font-weight-bold faa-flash animated ">Teguran Pinalti <?= $total_pinalti ?></p></a>
+						<div class="collapse" id="pinalti">
+							<p>Saudara/i mendapatkan teguran pinalti diakibatkan tidak menyelesaikan beberapa task tersebut dibawah ini: </p>
+							<ul>
+								<?php 
+									foreach($data_pinalties as $pinalti) {
+										echo "<li><a href='discuss/list/task/$pinalti[id_task]'>#$pinalti[id_task]</a> ($pinalti[description])</li>";
+									}
+								?>
+							</ul>
+            </div>
+            <?php } ?>
             <?php if ($totaltidakisi == 0) { ?>
               <div style="width: 100%; text-align: center;">
                 <i class="text-success fas fa-thumbs-up fa-10x faa-flash animated" style="font-size: 100px;"></i>
@@ -1088,8 +1103,9 @@ foreach ($alldiv as $ad) { $no++; ?>
         <div class="col-sm-8"><input type="text" class="form-control" name="katakunci<?= $ad['id_user'] ?>" id="katakunci<?= $ad['id_user'] ?>"></div>
         
       </div>
-        <a href="<?= base_url('mingguan/perpanjang/'.$ad['id_user']) ?>" class="btn btn-warning">Pengajuan Perpanjang Target Selesai</a>
-
+        <div class="mt-2">
+					<a href="<?= base_url('mingguan/perpanjang/'.$ad['id_user']) ?>" class="btn btn-warning">Pengajuan Perpanjang Target Selesai</a>
+				</div>
       <hr>
         <?php
         $time = strtotime("-14 days", time());
@@ -1122,14 +1138,16 @@ foreach ($alldiv as $ad) { $no++; ?>
 
         <table class="table  table-bordered table-hover table-striped tabel-rekap" >
           <thead>
-              <tr class="bg-light">
+              <tr class="bg-light text-center">
                 <th class="no">No</th>
-                <th class="rincian">Rincian</th>
-                <th class="persen">Persentase</th>
+                <th class="rincian"><?= $bulan3 . " " . $datenow ?></th>
+                <th class="persen">Persentase Hasil Pekerjaan</th>
+								<th class="persen">Poin Penilaian</th>
                 <th class="status">Status</th>
                 <th class="target">Target Selesai</th>
                 <th class="pencapaian">Pencapaian</th>
                 <th class="approval">Approval</th>
+                <th class="aksi">Aksi</th>
               </tr>
             <!-- <tr>
               <th colspan="2">TKM</th>
@@ -1160,6 +1178,7 @@ foreach ($alldiv as $ad) { $no++; ?>
               <td><?php echo $no++; ?></td>
               <td><?php echo $data['rincian']; ?></td>
               <td><center><?php echo $data['targetpersen']; ?>%</center></td>
+							<td class="text-center"><?php echo 0; ?></td>
               <td><?php echo $data['status']; ?></td>
               <td><?php echo date('d-m-Y', strtotime($data['targetselesai']));
                   if ($akses == 'Manager') {
@@ -1246,6 +1265,9 @@ foreach ($alldiv as $ad) { $no++; ?>
 
                    } ?>
                  </td>
+								 <td>
+									 <button onclick="viewDiscuss(<?=$data['no'] ?>, `detailkerja<?= $ad['id_user'] ?>`)" class="btn btn-primary btn-sm btn-view-discuss"><i class="fa fa-comments"></i>&nbsp;Lihat Diskusi</button>
+								 </td>
               
             </tr>
 
@@ -1488,9 +1510,7 @@ if ($this->session->userdata('ses_akses') == 'Direksi') {
 $no = 0;
  foreach ($under as $ad) : 
 
-  $kar = $this->db->query("SELECT * FROM tb_user WHERE atasan='$ad[id_user]'")->result_array();
-
-                ?>
+  $kar = $this->db->query("SELECT * FROM tb_user WHERE atasan='$ad[id_user]'")->result_array(); ?>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="detailkerja<?php echo $ad['id_user'] ?>">
   <div class="modal-dialog" role="document" style="min-width: 80%;">
@@ -1765,7 +1785,7 @@ foreach ($kar as $k) { ?>
               <tr class="bg-light">
                 <th class="no">No</th>
                 <th class="rincian">Rincian</th>
-                <th class="persen">Persentase</th>
+                <th class="persen">Persentase Hasil Pekerjaan</th>
                 <th class="status">Status</th>
                 <th class="target">Target Selesai</th>
                 <th class="pencapaian">Pencapaian</th>
@@ -2156,18 +2176,48 @@ $(function () {
 
   $(document).ready(function() {
     var cek = document.getElementById('num_disclaimer').value;
-    console.log(cek);
-    // alert(cek);
+		var isAvailableLastData = getParameterByName('lastData')
+		window.localStorage.setItem('previous_page', "")
+		
+		if (isAvailableLastData === 'true') {
+			let lastPopUp = window.localStorage.getItem('last_popup')
+			var idUser = getParameterByName('idUser')
+			var startDate = getParameterByName('startDate')
+			var endDate = getParameterByName('endDate')
+			var keyword = getParameterByName('keyword')
+			var isSearch = getParameterByName('isSearch')
+
+			$(`#${lastPopUp}`).modal('show')
+			if (isSearch === 'true') {
+				searchData(idUser, startDate, endDate, keyword)
+			}
+
+			setDataToLocalStorage('search_data_rekap', '')
+		}
 
     if (cek == 0) {
       $('#disclaimer').modal('show');
     }
   });
 
+	function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+	}
+
+	function viewDiscuss(taskId, idPopUp) {
+		setDataToLocalStorage('previous_page', '/dashboard')
+		setDataToLocalStorage('last_popup', idPopUp)
+		window.location.href = `/discuss/list/task/${taskId}`
+	}
+
   $(document).ready(function() {
   
     var cek = document.getElementById('cek_awal').value;
-    console.log(cek);
     if (cek == 'Berhasil Login') {
         $('#info_wl').modal('show');
       }
@@ -2271,21 +2321,34 @@ $(function () {
    $('#id_rincian_target').val(id);
    }
 
-   function searchData(id_user){
+	 function setDataToLocalStorage(key, data) {
+		 window.localStorage.setItem(key, data)
+	 }
+
+   function searchData(id_user, startDate = "", endDate = "", keyword = ""){
     var daritanggal = $('#daritanggal'+id_user).val();
     var sampaitanggal = $('#sampaitanggal'+id_user).val();
     var katakunci = $('#katakunci'+id_user).val();
+
+		katakunci = keyword !== "" ? keyword : katakunci
+		daritanggal = startDate !== "" ? startDate : daritanggal
+		sampaitanggal = endDate !== "" ? endDate : sampaitanggal
 
     var akses = $('#aksesnya').val();
     var usernya = $('#usernya').val();
 
     var base = window.location.origin + "/";
-         var host = base + window.location.pathname.split('/')[1];
+    var host = base + window.location.pathname.split('/')[1];
+
+		setDataToLocalStorage('search_data_rekap', JSON.stringify({
+							is_search: true,
+             id_user: id_user,
+             daritanggal: daritanggal,
+             sampaitanggal: sampaitanggal,
+             katakunci: katakunci
+           }))
 
     $('#datanya'+id_user).empty();
-    console.log(id_user);
-    console.log(daritanggal);
-    console.log(sampaitanggal);
     $.ajax({
            url: "<?php echo base_url('dashboard/getrekap') ?>",
            method: "POST",
@@ -2298,7 +2361,6 @@ $(function () {
            async: false,
            dataType: 'json',
            success: function(hasil) {
-             console.log(hasil);
               var ht = '';
             if(hasil.length > 0) {
              for (var i = 0; i < hasil.length; i++) {

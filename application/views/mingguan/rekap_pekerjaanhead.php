@@ -102,11 +102,14 @@
                 <th class="no">No</th>
                 <th class="rincian">Rincian</th>
                 <th class="persen">Persentase</th>
+								<th class="persen">Poin Penilaian</th>
                 <th class="status">Status</th>
                 <th class="target">Target Selesai</th>
                 <th class="target">Detail</th>
                 <th class="pencapaian">Pencapaian</th>
                 <th class="approval">Approval</th>
+                <th class="aksi">Aksi</th>
+
               </tr>
             <!-- <tr>
               <th colspan="2">TKM</th>
@@ -116,7 +119,7 @@
           </thead>
           <tbody id="datanya">
             <tr>
-            	<td colspan="7"><center><b>Belum Ada Data</b></center></td>
+            	<td colspan="10"><center><b>Belum Ada Data</b></center></td>
             </tr>
           </tbody>
         </table>
@@ -307,6 +310,42 @@
   });
 }
 
+$(document).ready(function() {
+    var isAvailableLastData = getParameterByName('lastData')
+      
+    if (isAvailableLastData === 'true') {
+      var idUser = getParameterByName('idUser')
+      var startDate = getParameterByName('startDate')
+      var endDate = getParameterByName('endDate')
+      var keyword = getParameterByName('keyword')
+      var isSearch = getParameterByName('isSearch')
+
+      if (isSearch === 'true') {
+        searchData(idUser, startDate, endDate, keyword)
+      }
+
+      setDataToLocalStorage('search_data_rekap', '')
+    }
+  })
+
+  function setDataToLocalStorage(key, data) {
+     window.localStorage.setItem(key, data)
+   }
+
+  function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+function viewDiscuss(taskId) {
+    setDataToLocalStorage('previous_page', '<?= base_url("mingguan/rekap_pekerjaan") ?>')
+    window.location.href = "<?php echo base_url('discuss/list/task/') ?>" + taskId
+  }
+
 $(document).ready(function(){
 	$( "#nama_kar" ).change(function() {
 	  var id_user = $(this).val();
@@ -355,6 +394,7 @@ $(document).ready(function(){
                     	<a href="#" type="button" data-toggle="modal" data-target="#pengurangan" onclick="kurangiRekap('`+hasil[i]['id_rincian']+`', '`+hasil[i]['targetpersen']+`', '`+hasil[i]['rincian']+`')"><i class="fas fa-edit"></i></a>
                 </center></td>`;
               }
+								ht += '<td class="text-center">'+hasil[i].point_task+'</td>';
                 ht += `<td>`+hasil[i]['status']+`</td>
                       <td>`+tanggal+`</td>
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
@@ -437,6 +477,7 @@ $(document).ready(function(){
 
                    }
                  ht += `</td>
+								 <td><button onclick="viewDiscuss(`+hasil[i]["no"]+`)" class="btn btn-primary btn-sm btn-view-discuss"><i class="fa fa-comments"></i>&nbsp;Lihat Diskusi</button></td>
               
             </tr>`;
               }

@@ -1,7 +1,9 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+include_once (dirname(__FILE__) . "/Api.php");
 
-class Mingguan extends CI_Controller
+
+class Mingguan extends Api
 {
 
   public function __construct()
@@ -1612,7 +1614,6 @@ class Mingguan extends CI_Controller
   public function rekap_pekerjaan()
   {
     $data['judul'] = 'Rekap Pekerjaan';
-    
 
     $this->load->view('template/header', $data);
     $this->load->view('template/sidebar');
