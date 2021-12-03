@@ -9,6 +9,7 @@ class Api extends Discuss
 		parent::__construct();
 		$this->load->model('Discuss_model');
 		$this->load->model('User_model');
+		$this->load->model('Point_model');
 	}
 
 	public function discuss_task($taskId)
@@ -41,7 +42,10 @@ class Api extends Discuss
 	public function point_task($taskId, $output = "json", $isCallback = false)
 	{
 		$discussModel = $this->Discuss_model;
+		$pointModel = $this->Point_model;
 		$data = $discussModel->getInformationTask($taskId);
+		$dataPointAdjustment = $pointModel->get_point_by_task_id($taskId);
+		$isAdjustmenPoint = count($dataPointAdjustment) > 0;
 
 		$point = 0;
 		$persentase = (int)$data['persentase'];
@@ -75,29 +79,33 @@ class Api extends Discuss
 		$totalPotonganOverWeekly = $totalPotonganOverWeekly > 100 ? 100 : $totalPotonganOverWeekly;
 		$selisihHari = $this->selisihHariByDate($data['tanggal_input_selesai'], $data['tanggal_target_seelsai_rincian']);
 
-		if ($weekInput == $weekFinish || $weekFinish < $weekInput) {
-			if ($persentase >= 100 && $dateFinish < $dateTarget || $dateFinish === $dateTarget) {
-				$point = $weekFinish == $weekInput ? 100 : 100 - $totalPotonganOverWeekly;
-			} else if ($persentase >= 100 && $dateFinish > $dateTarget) {
-				$point = 100 - ($selisihHari * 5);
-			}
-			
-		} else if ($weekFinish > $weekInput) {
-			$selisihWeekFinishWithWeekInput = $weekFinish - $weekInput;
-
-			if ($persentase >= 100 && $dateFinish < $dateTarget || $dateFinish === $dateTarget && $selisihWeekFinishWithWeekInput <= 1) {
-				$alreadyDiscuss = $this->alreadyDiscuss($taskId, $weekFinish);
-				if (!$alreadyDiscuss) {
-					for ($i=0; $i < $selisihWeekFinishWithWeekInput; $i++) { 
-						$totalPotonganOverWeekly = 50 * ($i + 1);
-					}
+		if (!$isAdjustmenPoint) {
+			if ($weekInput == $weekFinish || $weekFinish < $weekInput) {
+				if ($persentase >= 100 && $dateFinish < $dateTarget || $dateFinish === $dateTarget) {
+					$point = $weekFinish == $weekInput ? 100 : 100 - $totalPotonganOverWeekly;
+				} else if ($persentase >= 100 && $dateFinish > $dateTarget) {
+					$point = 100 - ($selisihHari * 5);
 				}
-				$point = $weekFinish == $weekDateTarget ? 100 : 100 - $totalPotonganOverWeekly;
-			} else if ($persentase >= 100 && $selisihWeekFinishWithWeekInput > 1) {
-				$descriptionPinalti = "Task sudah melebihi jadwal dan target yang ditentukan. Target task " . $data['tanggal_input_selesai'];
-				$this->add_data_pinalti($taskId, $descriptionPinalti);
-				$point = 0;
+				
+			} else if ($weekFinish > $weekInput) {
+				$selisihWeekFinishWithWeekInput = $weekFinish - $weekInput;
+	
+				if ($persentase >= 100 && $dateFinish < $dateTarget || $dateFinish === $dateTarget && $selisihWeekFinishWithWeekInput <= 1) {
+					$alreadyDiscuss = $this->alreadyDiscuss($taskId, $weekFinish);
+					if (!$alreadyDiscuss) {
+						for ($i=0; $i < $selisihWeekFinishWithWeekInput; $i++) { 
+							$totalPotonganOverWeekly = 50 * ($i + 1);
+						}
+					}
+					$point = $weekFinish == $weekDateTarget ? 100 : 100 - $totalPotonganOverWeekly;
+				} else if ($persentase >= 100 && $selisihWeekFinishWithWeekInput > 1) {
+					$descriptionPinalti = "Task sudah melebihi jadwal dan target yang ditentukan. Target task " . $data['tanggal_input_selesai'];
+					$this->add_data_pinalti($taskId, $descriptionPinalti);
+					$point = 0;
+				}
 			}
+		} else {
+			$point = $dataPointAdjustment[0]['point'];
 		}
 
 		$point = $point > 100 ? 100 : $point;
