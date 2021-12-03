@@ -153,6 +153,7 @@
               <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('<?= $data['id_rincian'] ?>');">Detail</button></td>
               
                 <?php
+								$descPencapaian = $CI->getKeteranganWithDisucuss($data['no']);
                 if ($data['targetpersen'] == 100 AND $data['tanggalupdate'] < $data['targetselesai'] AND $data['targetselesai'] != '0000-00-00') {
 
                   $tgl1 = date('Y-m-d', strtotime($data['tanggalupdate'])); 
@@ -178,7 +179,7 @@
                   $hari = $diff->d - $weekend;
 
                   // $hari = $jarak / 60 / 60 / 24;
-                  echo "<td style='background-color: #7CFC00;'>Lebih Cepat ".$hari." Hari</td>";
+                  echo "<td style='background-color: #7CFC00;'>Lebih Cepat ".$hari." Hari $descPencapaian</td>";
                 } else if ($data['targetpersen'] == 100 AND $data['tanggalupdate'] > $data['targetselesai'] AND $data['targetselesai'] != '0000-00-00') {
                   $tgl1 = date('Y-m-d', strtotime($data['targetselesai'])); 
                   $tgl2 = date('Y-m-d', strtotime($data['tanggalupdate'])); 
@@ -203,9 +204,9 @@
                   $hari = $diff->d - $weekend;
 
                   // $hari = $jarak / 60 / 60 / 24;
-                  echo "<td style='background-color: #DC143C; color: white;'>Terlambat ".$hari." Hari</td>";
+                  echo "<td style='background-color: #DC143C; color: white;'>Terlambat ".$hari." Hari $descPencapaian</td>";
                 } else if ($data['targetpersen'] == 100 AND $data['tanggalupdate'] == $data['targetselesai'] AND $data['targetselesai'] != '0000-00-00') {
-                  echo "<td style='background-color: #00CED1; color: white;'>Tepat Waktu</td>";
+                  echo "<td style='background-color: #00CED1; color: white;'>Tepat Waktu $descPencapaian</td>";
                 } else {
                   echo "<td></td>";
                 }
@@ -373,6 +374,7 @@
     window.location.href = "<?php echo base_url('discuss/list/task/') ?>" + taskId
   }
 
+
 function detailnya(id){
   console.log(id);
   var id_rincian = id;
@@ -494,7 +496,7 @@ function detailnya(id){
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
                       `;
               
-                
+                let messagePencapaianWithDiscuss = hasil[i].with_discuss;
                 if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] < hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   // var selisih = hasil[i]['targetselesai'] - hasil[i]['tanggalupdate'];
                   var date1 = new Date(hasil[i]['targetselesai']);    
@@ -520,7 +522,7 @@ function detailnya(id){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
                   
-                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] > hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   var date1 = new Date(hasil[i]['tanggalupdate']);    
                   var date2 = new Date(hasil[i]['targetselesai']);
@@ -545,9 +547,9 @@ function detailnya(id){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
 
-                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] == hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
-                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu</td>`;
+                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu ${messagePencapaianWithDiscuss}</td>`;
                 } else {
                   ht += `<td></td>`;
                 }
