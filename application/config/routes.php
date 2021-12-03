@@ -62,3 +62,8 @@ $route['api/user/manager'] = 'api/list_user_manager_user';
 $route['api/discuss/point/task/(:num)'] = 'api/point_task/$1';
 $route['api/discuss/delete/task/(:num)']['delete'] = 'discuss/delete/$1';
 $route['api/discuss/task/(:num)']['get'] = 'discuss/get_discuss_by_id/$1';
+
+
+$route['api/attachment/upload/task/(:num)/discuss/(:num)']['post'] = 'discuss/upload_attachment/$1/$2';
+$route['api/attachment/list/discuss/(:num)']['get'] = 'discuss/get_attachment_by_discuss_id/$1';
+$route['api/attachment/delete/(:num)']['delete'] = 'discuss/delete_attachment/$1';
