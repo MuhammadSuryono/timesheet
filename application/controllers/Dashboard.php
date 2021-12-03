@@ -158,7 +158,8 @@ class Dashboard extends CI_Controller
                                               JOIN rincian e ON a.no=e.id_tkmstaff AND d.no=e.idpekerjaan
                                               WHERE
                                                 a.userstaff = '$id_user'
-                                                AND a.tanggalisi between '$daritanggal' AND '$sampaitanggal'
+                                                -- AND a.tanggalisi between '$daritanggal' AND '$sampaitanggal'
+                                                AND b.daritanggal between '$daritanggal' AND '$sampaitanggal'
                                                 ")->result_array();
     } else {
     $data = $this->db->query("SELECT
@@ -178,7 +179,9 @@ class Dashboard extends CI_Controller
                                               JOIN rincian e ON a.no=e.id_tkmstaff AND d.no=e.idpekerjaan
                                               WHERE
                                                 a.userstaff = '$id_user'
-                                                AND (a.tanggalisi between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
+                                                -- AND (a.tanggalisi between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
+                                                AND (b.daritanggal between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
+                                            
                                                 ")->result_array();
   }
     echo json_encode($data);
