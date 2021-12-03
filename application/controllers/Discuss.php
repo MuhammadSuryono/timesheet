@@ -7,6 +7,8 @@ class Discuss extends MY_Controller {
 		parent::__construct();
 		$this->load->model('Discuss_model');
 		$this->load->model('Pinalti_model');
+		$this->load->model('Attachment_model');
+		$this->load->model('Point_model');
 	}
 
 	public function list_discuss_task($idTask) {
@@ -15,7 +17,7 @@ class Discuss extends MY_Controller {
 
 		$dataInformationTask = $this->Discuss_model->getInformationTask($idTask);
 		$this->setData('information_task', $dataInformationTask);
-
+		$this->setData('is_management', in_array($this->session->userdata('ses_akses'), ["Manager", "Direksi"]));
 
 		$data = $this->getParseData();
 
@@ -97,6 +99,70 @@ class Discuss extends MY_Controller {
 		$discussModel =  $this->Discuss_model;
 		$discuss = $discussModel->getDiscussById($id);
 		echo json_encode($this->response(200, "Success retrieve data", $discuss));
+	}
+
+	public function upload_attachment($taskId, $discussId) {
+		$attachmentModel = $this->Attachment_model;
+		$config['upload_path']          = './dist/';
+		$config['max_size']             = 100;
+		$config['allowed_types']        = 'jpg|gif|png|pdf|doc|docx|xls|xlsx|jpeg';
+ 
+		$this->load->library('upload', $config);
+		$this->upload->initialize($config);
+
+		if ( ! $this->upload->do_upload('file')){
+			$error = array('error' => $this->upload->display_errors());
+			echo json_encode($this->response(500, "Error upload attachment", $error));
+		}else{
+			$data = $this->upload->data();
+			$bodyAttachment = [
+				"id_task" => $taskId,
+				"id_discuss" => $discussId,
+				"filename" => $data['file_name'],
+				'created_by' => $this->session->userdata('ses_id'),
+			];
+
+			$isCreated = $attachmentModel->create($bodyAttachment);
+			echo json_encode($this->response(200, "Success upload attachment", $data));
+		}
+	}
+
+	public function get_attachment_by_discuss_id($idDiscuss) {
+		$attachmentModel =  $this->Attachment_model;
+		$attachments = $attachmentModel->get_attachment_by_discuss_id($idDiscuss);
+		echo json_encode($this->response(200, "Success retrieve data", $attachments));
+	}
+
+	public function delete_attachment($idAttachment) {
+		$isDeleted = $this->Attachment_model->delete($idAttachment);
+		if ($isDeleted) {
+			echo json_encode($this->response(200, "Berhasil Delete Data Atachment", $isDeleted));
+		} else {
+			echo json_encode($this->response(500, "Gagal Delete Data Atachment", $isDeleted));
+		}
+	}
+
+	public function add_point($idTask, $point = 0) {
+		$pointModel = $this->Point_model;
+
+		$pinalti = $pointModel->get_pinalti_by_task_id($idTask);
+		$isAlreadyPinalti = count($pinalti) > 0;
+
+		$data = [
+			"id_task" => $idTask,
+			'point' => $point,
+			'updated_by' => $this->session->userdata('ses_id'),
+			'created_by' => $this->session->userdata('ses_id'),
+		];
+
+
+		if ($isAlreadyPinalti) {
+			$isUpdated = $pointModel->update($idTask, $data);
+			return $isUpdated;
+		} else {
+			$isCreated = $pointModel->create($data);
+			return $isCreated;
+		}
 	}
 }
 

@@ -1,3 +1,9 @@
+<?php 
+$dataInformationTask = $datas['information_task'];
+$dataTitleSplit = explode(":", $dataInformationTask['project']);
+$kategoriPekerjaan = isset($dataTitleSplit[0]) ? $dataTitleSplit[0] : "-";
+$titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
+?>
 <div class="main-content">
   <section class="section">
     <div class="section-header">
@@ -11,6 +17,8 @@
 	<div class="section-body">
 		<div class="row">
 			<div class="col-lg-12">
+				<input id="status-management" type="hidden" value="<?= $datas['is_management'] == '' ? 0 : $datas['is_management'] ?>" />
+				<input id="status-task" type="hidden" value="<?= isset($dataInformationTask['status_string']) && $dataInformationTask['status_string'] != ""  ? $dataInformationTask['status_string'] : '-' ?>" />
 				<div id="alert-notification"></div>
 				<div class="card">
 					<div class="card-header d-flex justify-content-between align-items-center">
@@ -19,12 +27,6 @@
 							<div class="numberCircle" id="point-task">0</div>
 						</div>
 					</div>
-					<?php 
-						$dataInformationTask = $datas['information_task'];
-						$dataTitleSplit = explode(":", $dataInformationTask['project']);
-						$kategoriPekerjaan = isset($dataTitleSplit[0]) ? $dataTitleSplit[0] : "-";
-						$titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
-					?>
 					<div class="card-body">
 						<div class="row">
 							<div class="col-lg-6">
@@ -96,7 +98,7 @@
 									<tr>
 										<td>Pencapaian</td>
 										<td>:</td>
-										<td>&nbsp;<?= isset($dataInformationTask['status_perpanjang']) && $dataInformationTask['status_perpanjang'] != "" ? $dataInformationTask['status_perpanjang'] : 'Tidak Ada' ?> <i class="fa fa-question-circle pointer"></i></td>
+										<td>&nbsp;<?= isset($dataInformationTask['status_perpanjang']) && $dataInformationTask['status_perpanjang'] != "" ? $dataInformationTask['status_perpanjang'] : 'Tidak Ada' ?> </td>
 									</tr>
 									<tr>
 										<td>Status Pekerjaan</td>
@@ -131,7 +133,7 @@
 			<div class="col-lg-12">
 				<div class="card">
 					<div class="card-header">
-						<?php if ($statusPekerjaan != "Selesai") {
+						<?php if ($statusPekerjaan != "Selesai" || $datas['is_management']) {
 							echo '<button class="btn btn-primary" id="btn-create-discuss"><i class="fa fa-plus"></i> Tambah Diskusi</button>';
 						} ?>
 					</div>
@@ -194,13 +196,48 @@
 				</div> -->
 				<div class="form-group">
 					<label class="col-form-label">Hasil Diskusi</label>
-					<textarea class="form-control" id="results-discuss" minlength="23"></textarea>
+					<textarea class="form-control" id="results-discuss" minlength="100" style="height: 450px !important;"></textarea>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
 				<button type="button" class="btn btn-primary" id="submitCreateDiscuss">Simpan</button>
 			</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="attachments-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Lampiran Pendukung</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id="alert-form-attachment"></div>
+				<?= $datas['is_management'] ? "" : '<form enctype="multipart/form-data">
+				<div class="row">
+					<div class="col-lg-8">
+						<div class="mb-4">
+							<label>Pilih Dokumen Pendukung</label> <br>
+							<input type="file" name="file" accept="*" id="attachment">
+						</div>
+					</div>
+					<div class="col-lg-4 text-center">
+						<button type="button" class="btn btn-primary mt-4" id="submitUploadFile">Simpan</button>
+					</div>
+				</div>
+				</form>' ?>
+				<div class="row">
+					<div class="col-lg-12">
+					<h6>Daftar Lamprian:</h6>
+					<ul class="list-group" id="list-attachments"></ul>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -230,13 +267,17 @@
 	</div>
 </div>
 
-<script>
+<script type="text/javascript">
 
 	let stateForm = "create"
 	let stateIdDiscuss = 0;
-	$(document).ready(function() {
+	let stateTaskId = 0;
+	let isManagement = document.getElementById("status-management").value === "0" ? false : document.getElementById("status-management").value === "1" ? true : false
+	$(document).ready(function() { 
+		console.log(isManagement)
 		const btnCreateDiscuss = $('#btn-create-discuss')
 		const btnSubmitCreateDiscuss = $('#submitCreateDiscuss');
+		const btnSubmitUploadAttachment = $('#submitUploadFile')
 		const pathName = window.location.pathname
 		let pathNameSplit = pathName.split("/")
 		let taskId = pathNameSplit[pathNameSplit.length - 1]
@@ -254,6 +295,10 @@
 			btnSubmitCreateDiscuss.html('Menyimpan')
 			submitDiscussTask(taskId, btnSubmitCreateDiscuss)
 		})
+
+		btnSubmitUploadAttachment.click(function() {
+			submitAttachment();
+		})
   	});
 
 	function setDataTableDiscuss(taskId) {
@@ -268,7 +313,15 @@
 
 			if (data.length > 0) {
 				data.forEach((element, index) => {
-					htmlTableDataDiscuss += `<tr><td class='text-center'>${index + 1}</td><td>${element.title}</td><td>${element.mentor}</td><td class="text-center">${element.created_at}</td><td class="text-center">${element.updated_at}</td><td><button onclick="getDetailDiscuss(${element.id})" class="btn btn-primary btn-sm mr-1"><i class="fa fa-eye"></i>&nbsp;Detail</button><button onclick="getDataDiscussUpdate(${element.id})" class="btn btn-success btn-sm mr-1"><i class="fa fa-edit"></i>&nbsp;Edit</button><button onclick="hapus(${element.id}, ${taskId})" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;Hapus</button></td></tr>`
+					htmlTableDataDiscuss += `<tr><td class='text-center'>${index + 1}</td><td>${element.title}</td><td>${element.mentor}</td><td class="text-center">${element.created_at}</td><td class="text-center">${element.updated_at}</td><td>
+					<button onclick="getDetailDiscuss(${element.id})" class="btn btn-primary btn-sm mr-1"><i class="fa fa-eye"></i>&nbsp;Detail</button>`
+					
+					if (!isManagement) {
+						htmlTableDataDiscuss += `<button onclick="getDataDiscussUpdate(${element.id})" class="btn btn-success btn-sm mr-1"><i class="fa fa-edit"></i>&nbsp;Edit</button>
+					<button onclick="hapus(${element.id}, ${taskId})" class="btn btn-danger btn-sm mr-1"><i class="fa fa-trash"></i>&nbsp;Hapus</button>`
+					}
+
+					htmlTableDataDiscuss += `<button onclick="addAttachment(${element.id}, ${taskId})" class="btn btn-danger btn-sm"><i class="fa fa-file"></i>&nbsp;Lampiran</button></td></tr>`
 				});	
 				setTimeout(() => {
 					bodyTable.innerHTML = htmlTableDataDiscuss;	
@@ -294,6 +347,10 @@
 
 	function loadingDataTable() {
 		return '<tr class="text-center" style="border-bottom: 1px solid #F0F8FF;"><th colspan="6"><div class="item"><i class="loader --1"></i></div></th></tr>';
+	}
+
+	function loadingContent() {
+		return '<div class="item"><i class="loader --1"></i></div>';
 	}
 
 	function alertForm(type = "success", message = "") {
@@ -334,6 +391,14 @@
 		let lastPopUp = window.localStorage.getItem('last_popup')
 		let previousPage = window.localStorage.getItem('previous_page')
 		let searchData = window.localStorage.getItem('search_data_rekap')
+
+		if (previousPage === undefined || previousPage === null || previousPage == "") {
+			if (isManagement) {
+				previousPage = "/mingguan/rekap_pekerjaanhead"
+			} else {
+				previousPage = "/mingguan/rekap_pekerjaan"
+			}
+		}
 
 		previousPage = previousPage + "?lastData=true"
 
@@ -437,14 +502,14 @@
 						notifAlertForm.innerHTML = alertForm("danger", res.message)
 					}
 
+				}).catch((e) => {
+					console.warn(e)
+					notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
+					setTimeout(() => {
+						notifAlertForm.innerHTML = ""
+					}, 2000)
 				})
 			}
-		}).catch((e) => {
-			console.warn(e)
-			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
-			setTimeout(() => {
-				notifAlertForm.innerHTML = ""
-			}, 2000)
 		})
 	}
 
@@ -483,6 +548,100 @@
 				getUserManager(data.id_user_mentor)
 			}
 		})
+	}
+
+	function addAttachment(idDiscuss, taskId) {
+		showModal("attachments-modal")
+		stateTaskId = taskId
+		stateIdDiscuss = idDiscuss
+		setListAttachments(idDiscuss)
+	}
+
+	function deleteAttachment(id, discussId) {
+		const notifAlertForm = document.getElementById('alert-form-attachment')
+		httpRequest('/api/attachment/delete/' +id, [], "DELETE").then((res) => {
+			if (res.is_success) {
+				setListAttachments(discussId)
+				notifAlertForm.innerHTML = alertForm("success", res.message)
+				setTimeout(() => {
+					notifAlertForm.innerHTML = ""
+				}, 2000)
+			} else {
+				setTimeout(() => {
+					notifAlertForm.innerHTML = ""
+				}, 2000)
+				notifAlertForm.innerHTML = alertForm("danger", res.message)
+			}
+
+		}).catch((e) => {
+			console.warn(e)
+			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
+			setTimeout(() => {
+				notifAlertForm.innerHTML = ""
+			}, 2000)
+		})
+	}
+
+	function setListAttachments(discussId) {
+		const optionMentors = document.getElementById("list-attachments")
+		optionMentors.innerHTML = loadingContent();
+		httpRequestGet('/api/attachment/list/discuss/' + discussId).then((res) => {
+			let data = res.data
+			let lists = ""
+			data.forEach((elm,i) => {
+				lists += `<li class="list-group-item d-flex justify-content-between align-items-center">
+							${elm.filename}`
+				if (!isManagement) {
+					lists += `<button class="btn btn-sm btn-danger" onclick="deleteAttachment(${elm.id}, ${elm.id_discuss})"><i class="fa fa-trash"></i></button>`
+				}
+					
+				lists += `</li>`
+			})
+
+			setTimeout(() => {
+				optionMentors.innerHTML = lists;
+			}, 2000)
+
+		})
+	}
+
+	function submitAttachment() {
+		const notifAlertForm = document.getElementById('alert-form-attachment')
+		const input = document.getElementById('attachment');
+		let file = input.files[0];
+
+		uploadFile(file).then((res) => {
+			if (res.is_success) {
+				notifAlertForm.innerHTML = alertForm("success", res.message)
+				setListAttachments(stateIdDiscuss)
+				setTimeout(() => {
+					notifAlertForm.innerHTML = ""
+				}, 2000)
+			} else {
+				setTimeout(() => {
+					notifAlertForm.innerHTML = ""
+				}, 2000)
+				notifAlertForm.innerHTML = alertForm("danger", res.message)
+			}
+		}).catch((e) => {
+			console.warn(e)
+			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
+			setTimeout(() => {
+				notifAlertForm.innerHTML = ""
+			}, 2000)
+		})
+	}
+
+	function uploadFile(file) {
+		const fd = new FormData();
+		fd.append('file', file);
+
+		return fetch('/api/attachment/upload/task/' + stateTaskId + '/discuss/' + stateIdDiscuss, {
+			method: 'POST',
+			body: fd
+		})
+		.then(res => res.json())
+		.then(data => data)
 	}
 
 </script>
