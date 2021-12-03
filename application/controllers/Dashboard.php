@@ -169,7 +169,8 @@ class Dashboard extends Api
                                               WHERE
                                                 a.userstaff = '$id_user'
                                                 -- AND a.tanggalisi between '$daritanggal' AND '$sampaitanggal'
-                                                AND b.daritanggal between '$daritanggal' AND '$sampaitanggal'
+                                                AND (b.daritanggal between '$daritanggal' AND '$sampaitanggal'
+                                                OR e.targetselesai between '$daritanggal' AND '$sampaitanggal')
                                                 ")->result_array();
     } else {
     $data = $this->db->query("SELECT
@@ -190,7 +191,9 @@ class Dashboard extends Api
                                               WHERE
                                                 a.userstaff = '$id_user'
                                                 -- AND (a.tanggalisi between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
-                                                AND (b.daritanggal between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%')
+                                                AND (b.daritanggal between '$daritanggal' AND '$sampaitanggal' OR e.rincian LIKE '%$katakunci%'
+                                                OR e.targetselesai between '$daritanggal' AND '$sampaitanggal')
+                                                
                                             
                                                 ")->result_array();
 		}

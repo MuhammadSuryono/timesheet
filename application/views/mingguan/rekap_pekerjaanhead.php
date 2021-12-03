@@ -1,6 +1,8 @@
 
 <?php 
  $user = $this->session->userdata('ses_username');
+ $akses = $this->session->userdata('ses_akses');
+
 ?>
 <!-- Main Content -->
 <style type="text/css">
@@ -63,7 +65,21 @@
         <div class="card">
             <div class="card-body">
             <h6 class="text-primary">Search Data :</h6>
-      <div class="row mx-3 mb-3">
+        <?php if ($akses == 'Direksi') { ?>
+          <div class="row mx-3 mb-3">
+            <div class="col-sm-2"><strong>Pilih Divisi :</strong></div>
+            <div class="col-sm-8">
+              <select class="form-control selectpicker select2" id="divisi" style="width: 100%;" onchange="gantiDivisi()">
+                <option>--Pilih Nama Divisi--</option>
+                <?php foreach ($divisi as $row) {
+                  ?>
+                <option value="<?= $row['divisi'] ?>"><?= $row['divisi'] ?></option>
+                <?php } ?>
+              </select>
+            </div>    
+        </div>
+        <?php } ?>
+        <div class="row mx-3 mb-3">
             <div class="col-sm-2"><strong>Pilih Nama :</strong></div>
             <div class="col-sm-8">
               <select class="form-control selectpicker select2" id="nama_kar" style="width: 100%;">
@@ -73,9 +89,9 @@
                 <option value="<?= $row['id_user'] ?>"><?= $row['nama_user'] ?></option>
                 <?php } ?>
               </select>
-            </div>
-            
+            </div>    
         </div>
+
       <div class="row mx-3">
         <div class="col-sm-2"><p class="font-weight-bold">Dari Tanggal :</p></div>
         <div class="col-sm-3"><input type="date" class="form-control" name="daritanggal" id="daritanggal"></div>
@@ -253,6 +269,40 @@
 
 <script type="text/javascript">
 
+function gantiDivisi(){
+  
+  var divisi = $('#divisi').val();
+
+  $('#nama_kar').empty();
+
+  $.ajax({
+           url: "<?php echo base_url('mingguan/getname_divisi') ?>",
+           method: "POST",
+           data: {
+             divisi: divisi,
+             
+           },
+           async: false,
+           dataType: 'json',
+           success: function(hasil) {
+             console.log(hasil);
+              var ht = '';
+            if(hasil.length > 0) {
+              ht +=  `<option>--Pilih Nama Divisi--</option>`;
+              for (var i = 0; i < hasil.length; i++) {
+               ht += "<option value='" + hasil[i]['id_user'] + "'>" + hasil[i]['nama_user'] + "</option>";
+             }
+
+           } else {
+              ht +=  `<option>--Pilih Nama Divisi--</option>`;
+              
+            }
+             $('#nama_kar').append(ht);
+            
+         }
+  });
+}
+
 	function detailnya(id){
   console.log(id);
   var id_rincian = id;
@@ -273,14 +323,7 @@
               var ht = '';
             if(hasil.length > 0) {
               $('#pekerjaan_submit').val(hasil[0]['project']);
-              // $('#keterangan_submit').val(hasil[0]['keterangan']);
-              // $('#tanggalnya').val(hasil[0]['tanggal']);
-              // if (hasil[0]['fileupload'] != null || hasil[0]['fileupload'] != '') {
-              //   var file = `<a target="_blank" href="<?php echo base_url('dist/upload/') ?>`+hasil[0]['fileupload']+`"><i class="fa fa-file"></i></a>`;
-              //   $('#filenya').append(file);
-              // } else {
-              //   $('#filenya').empty();
-              // }
+            
              for (var i = 0; i < hasil.length; i++) {
                 var num = i + 1;
               

@@ -1409,4 +1409,11 @@ class Mingguan_model extends CI_Model
     }
     var_dump($user);
   }
+
+  public function getname_divisi()
+  {
+    $divisi = $_POST['divisi'];
+
+    return $this->db->get_where('tb_user', ['divisi' => $divisi])->result_array();
+  }
 }

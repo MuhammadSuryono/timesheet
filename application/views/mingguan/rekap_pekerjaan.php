@@ -119,7 +119,7 @@
             <?php if ($get == NULL) {
              ?>
              <tr class="text-center" style="border-bottom: 1px solid #F0F8FF;">
-              <th colspan="7">
+              <th colspan="9">
                 <h6>Data Tidak Tersedia</h6>
               </th>
             </tr>

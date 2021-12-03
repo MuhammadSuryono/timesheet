@@ -1626,14 +1626,21 @@ class Mingguan extends Api
   public function rekap_pekerjaanhead()
   {
     $data['judul'] = 'Rekap Pekerjaan';
+
+    $data['divisi'] = $this->db->get('divisi')->result_array();
     
 
     $this->load->view('template/header', $data);
     $this->load->view('template/sidebar');
     $this->load->view('mingguan/rekap_pekerjaanhead', $data);
-    $this->load->view('template/footer');
+    $this->load->view('template/footer'); 
+  }
 
-    
+  public function getname_divisi()
+  {
+    $data = $this->Mingguan_model->getname_divisi();
+
+    echo json_encode($data);
   }
 
   public function kurangi_rekap()
