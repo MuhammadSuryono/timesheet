@@ -195,6 +195,31 @@ class Dashboard extends Api
 		$arrayNew = [];
 		for ($i=0; $i < count($data); $i++) { 
 			$data[$i]['point_task'] = $this->point_task($data[$i]['no'], "text", true);
+			$dateInput = $data[$i]['tanggalisi'];
+			$datefinish = $data[$i]['tanggalupdate'];
+			$dateTarget = $data[$i]['targetselesai'];
+
+			$weekInput = $this->getNumberOfWeek($dateInput);
+			$weekFinish = $this->getNumberOfWeek($datefinish);
+			$weekTarget = $this->getNumberOfWeek($dateTarget);
+			
+			if (!in_array($dateInput, ["Saturday", "Friday", "Sunday"]) && $weekInput != $weekTarget) {
+				$weekInput = $weekInput + 1;
+			}
+	
+			if (in_array($dateInput, ["Saturday", "Friday", "Sunday"])) {
+				$weekInput = $weekInput + 1;
+			}
+
+			
+			$arrangeDateStart = $this->getStartAndEndDate($weekInput);
+			$arrangeDateFinish = $this->getStartAndEndDate($weekFinish);
+			
+			$discussModel = $this->Discuss_model;
+			$dataDiscuss = $discussModel->getDiscussByTaskIdRangeDate($data[$i]['no'], $arrangeDateStart['week_start'], $arrangeDateFinish['week_end']);
+
+			$data[$i]['with_discuss'] = count($dataDiscuss) > 0 ? "Dengan Diskusi" : "Tidak dengan Diskusi";
+
 			array_push($arrayNew, $data[$i]);
 		}
   
@@ -230,7 +255,38 @@ class Dashboard extends Api
                                                 -- AND a.tanggalisi between '$daritanggal' AND '$sampaitanggal'
                                                 AND b.daritanggal between '$daritanggal' AND '$sampaitanggal'
                                                 ")->result_array();
-   
-    echo json_encode($data);
+
+			$arrayNew = [];
+			for ($i=0; $i < count($data); $i++) { 
+				$data[$i]['point_task'] = $this->point_task($data[$i]['no'], "text", true);
+				$dateInput = $data[$i]['tanggalisi'];
+				$datefinish = $data[$i]['tanggalupdate'];
+				$dateTarget = $data[$i]['targetselesai'];
+
+				$weekInput = $this->getNumberOfWeek($dateInput);
+				$weekFinish = $this->getNumberOfWeek($datefinish);
+				$weekTarget = $this->getNumberOfWeek($dateTarget);
+				
+				if (!in_array($dateInput, ["Saturday", "Friday", "Sunday"]) && $weekInput != $weekTarget) {
+					$weekInput = $weekInput + 1;
+				}
+
+				if (in_array($dateInput, ["Saturday", "Friday", "Sunday"])) {
+					$weekInput = $weekInput + 1;
+				}
+
+				
+				$arrangeDateStart = $this->getStartAndEndDate($weekInput);
+				$arrangeDateFinish = $this->getStartAndEndDate($weekFinish);
+				
+				$discussModel = $this->Discuss_model;
+				$dataDiscuss = $discussModel->getDiscussByTaskIdRangeDate($data[$i]['no'], $arrangeDateStart['week_start'], $arrangeDateFinish['week_end']);
+
+				$data[$i]['with_discuss'] = count($dataDiscuss) > 0 ? "Dengan Diskusi" : "Tidak dengan Diskusi";
+
+				array_push($arrayNew, $data[$i]);
+			}
+
+			echo json_encode($arrayNew);
   }
 }

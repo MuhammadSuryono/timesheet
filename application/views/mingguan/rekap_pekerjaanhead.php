@@ -362,7 +362,7 @@ $(document).ready(function(){
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
                       `;
               
-                
+								let messagePencapaianWithDiscuss = hasil[i].with_discuss;
                 if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] < hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   // var selisih = hasil[i]['targetselesai'] - hasil[i]['tanggalupdate'];
                   var date1 = new Date(hasil[i]['targetselesai']);    
@@ -388,7 +388,7 @@ $(document).ready(function(){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
                   
-                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] > hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   var date1 = new Date(hasil[i]['tanggalupdate']);    
                   var date2 = new Date(hasil[i]['targetselesai']);
@@ -413,9 +413,9 @@ $(document).ready(function(){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
 
-                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] == hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
-                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu</td>`;
+                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu ${messagePencapaianWithDiscuss}</td>`;
                 } else {
                   ht += `<td></td>`;
                 }
@@ -512,12 +512,13 @@ $(document).ready(function(){
                     	<a href="#" type="button" data-toggle="modal" data-target="#pengurangan" onclick="kurangiRekap('`+hasil[i]['id_rincian']+`', '`+hasil[i]['targetpersen']+`', '`+hasil[i]['rincian']+`')"><i class="fas fa-edit"></i></a>
                 </center></td>`;
               }
+								ht += '<td class="text-center">'+hasil[i].point_task+'</td>';
                 ht += `<td>`+hasil[i]['status']+`</td>
                       <td>`+tanggal+`</td>
                       <td><button type="button" class="btn btn-round btn-sm btn-primary" data-toggle="modal" data-target="#detailin" onclick="detailnya('`+hasil[i]['id_rincian']+`');">Detail</button></td>
                       `;
               
-                
+								let messagePencapaianWithDiscuss = hasil[i].with_discuss;
                 if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] < hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   // var selisih = hasil[i]['targetselesai'] - hasil[i]['tanggalupdate'];
                   var date1 = new Date(hasil[i]['targetselesai']);    
@@ -543,7 +544,7 @@ $(document).ready(function(){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
                   
-                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #7CFC00;">Lebih Cepat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] > hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
                   var date1 = new Date(hasil[i]['tanggalupdate']);    
                   var date2 = new Date(hasil[i]['targetselesai']);
@@ -568,9 +569,9 @@ $(document).ready(function(){
                   var days = (Math.floor(diff/(24*60*60))) - weekend;
                   var leftSec = diff - days * 24*60*60;
 
-                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari</td>`;
+                  ht += `<td style="background-color: #DC143C; color: white;">Terlambat `+days+` Hari ${messagePencapaianWithDiscuss}</td>`;
                 } else if (hasil[i]['targetpersen'] == 100 && hasil[i]['tanggalupdate'] == hasil[i]['targetselesai'] && hasil[i]['targetselesai'] != '0000-00-00') {
-                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu</td>`;
+                  ht += `<td style="background-color: #00CED1; color: white;">Tepat Waktu ${messagePencapaianWithDiscuss}</td>`;
                 } else {
                   ht += `<td></td>`;
                 }

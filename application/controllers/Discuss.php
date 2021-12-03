@@ -164,5 +164,35 @@ class Discuss extends MY_Controller {
 			return $isCreated;
 		}
 	}
+
+	function getKeteranganWithDisucuss($taskId) {
+		$discussModel = $this->Discuss_model;
+		$data = $discussModel->getInformationTask($taskId);
+		$dateInput = $data['tanggalisi'];
+		$datefinish = $data['tanggal_input_selesai'];
+		$dateTarget = $data['tanggal_target_seelsai_rincian'];
+
+		$weekInput = $this->getNumberOfWeek($dateInput);
+		$weekFinish = $this->getNumberOfWeek($datefinish);
+		$weekTarget = $this->getNumberOfWeek($dateTarget);
+		
+		if (!in_array($dateInput, ["Saturday", "Friday", "Sunday"]) && $weekInput != $weekTarget) {
+			$weekInput = $weekInput + 1;
+		}
+
+		if (in_array($dateInput, ["Saturday", "Friday", "Sunday"])) {
+			$weekInput = $weekInput + 1;
+		}
+
+		
+		$arrangeDateStart = $this->getStartAndEndDate($weekInput);
+		$arrangeDateFinish = $this->getStartAndEndDate($weekFinish);
+		
+		$dataDiscuss = $discussModel->getDiscussByTaskIdRangeDate($data['no'], $arrangeDateStart['week_start'], $arrangeDateFinish['week_end']);
+
+		$desc = count($dataDiscuss) > 0 ? "Dengan Diskusi" : "Tidak dengan Diskusi";
+
+		return $desc;
+	}
 }
 
