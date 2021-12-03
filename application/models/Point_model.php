@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class pinalti_model extends CI_Model
+class Point_model extends CI_Model
 {
-	private $tbName = "tb_pinalti";
+	private $tbName = "tb_adjustment_point";
 	function create($data){
 		return $this->db->insert($this->tbName,$data);
 	}
@@ -14,11 +14,11 @@ class pinalti_model extends CI_Model
 
 	public function update($id, $data) 
 	{		
-		$this->db->where('id', $id);
+		$this->db->where('id_task', $id);
 		$this->db->update($this->tbName, $data);
 	}
 
-	public function get_pinalti_by_task_id($idTask)
+	public function get_point_by_task_id($idTask)
 	{
 		$this->db->where('id_task', $idTask);
 		$query = $this->db->get($this->tbName);
