@@ -190,7 +190,7 @@
           </div>
           <div class="form-group">
             <label for="alasan_tolak">Persentase</label>
-            <input type="number" name="persentase_kurang" id="persentase_kurang" class="form-control">
+            <input type="number" name="persentase_kurang" id="persentase_kurang" class="form-control" max="100">
           </div>
           <div class="form-group">
             <label for="alasan_tolak">Alasan Pengurangan Persentase</label>

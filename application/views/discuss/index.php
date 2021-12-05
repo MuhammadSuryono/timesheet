@@ -95,11 +95,11 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 										<td>:</td>
 										<td>&nbsp;<?= isset($dataInformationTask['status_perpanjang']) && $dataInformationTask['status_perpanjang'] != "" ? $dataInformationTask['status_perpanjang'] : 'Tidak Ada' ?> <i class="fa fa-question-circle pointer"></i></td>
 									</tr>
-									<tr>
+									<!-- <tr>
 										<td>Pencapaian</td>
 										<td>:</td>
 										<td>&nbsp;<?= isset($dataInformationTask['status_perpanjang']) && $dataInformationTask['status_perpanjang'] != "" ? $dataInformationTask['status_perpanjang'] : 'Tidak Ada' ?> </td>
-									</tr>
+									</tr> -->
 									<tr>
 										<td>Status Pekerjaan</td>
 										<td>:</td>
@@ -197,6 +197,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 				<div class="form-group">
 					<label class="col-form-label">Hasil Diskusi</label>
 					<textarea class="form-control" id="results-discuss" minlength="100" style="height: 450px !important;"></textarea>
+					<small>Minimal karakter untuk hasil diskusi 100 karakter. <span>Total karakter diinput: <b id="total-karaketer">0</b></span></small>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -209,7 +210,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 </div>
 
 <div class="modal fade" id="attachments-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLabel">Lampiran Pendukung</h5>
@@ -227,8 +228,8 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 							<input type="file" name="file" accept="*" id="attachment">
 						</div>
 					</div>
-					<div class="col-lg-4 text-center">
-						<button type="button" class="btn btn-primary mt-4" id="submitUploadFile">Simpan</button>
+					<div class="col-lg-4 text-right">
+						<button type="button" class="btn btn-primary mt-4" id="submitUploadFile"><i class="fa fa-save"></i> Simpan</button>
 					</div>
 				</div>
 				</form>' ?>
@@ -252,7 +253,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 </div>
 
 <div class="modal fade" id="detail-discuss" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="exampleModalLabel">Isi Diskusi</h5>
@@ -273,11 +274,14 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	let BASE_URL = '<?= base_url() ?>'
 	let stateIdDiscuss = 0;
 	let stateTaskId = 0;
+	let stateTotalResultDiscuss = 0;
 	let isManagement = document.getElementById("status-management").value === "0" ? false : document.getElementById("status-management").value === "1" ? true : false
 	$(document).ready(function() { 
 		const btnCreateDiscuss = $('#btn-create-discuss')
 		const btnSubmitCreateDiscuss = $('#submitCreateDiscuss');
 		const btnSubmitUploadAttachment = $('#submitUploadFile')
+		const textResultDiscuss = $('#results-discuss')
+		const textTotalCharachter = document.getElementById('total-karaketer')
 		const pathName = window.location.pathname
 		let pathNameSplit = pathName.split("/")
 		let taskId = pathNameSplit[pathNameSplit.length - 1]
@@ -291,14 +295,18 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 		})
 
 		btnSubmitCreateDiscuss.click(function() {
-			btnSubmitCreateDiscuss.attr('disabled','disabled')
-			btnSubmitCreateDiscuss.html('Menyimpan')
 			submitDiscussTask(taskId, btnSubmitCreateDiscuss)
 		})
 
 		btnSubmitUploadAttachment.click(function() {
 			submitAttachment();
 		})
+
+		textResultDiscuss.bind('input propertychange', function() {
+			stateTotalResultDiscuss = this.value.length
+			textTotalCharachter.innerHTML = stateTotalResultDiscuss
+		});
+
   	});
 
 	function setDataTableDiscuss(taskId) {
@@ -448,10 +456,18 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 		let method = "POST"
 		if (stateForm === "update") {
 			pathSubmit = 'api/discuss/update/' + stateIdDiscuss;
-			method = "PUT"
 		}
 
-		httpRequest(pathSubmit, formData, method).then((res) => {
+		if (stateTotalResultDiscuss <= 100) {
+			setTimeout(() => {
+				notifAlertForm.innerHTML = "";
+			}, 5000)
+			notifAlertForm.innerHTML = alertForm("warning", "Total hasil diskusi anda kurang dari 100 karakter");
+		} else {
+			elmButtonSubmit.attr('disabled','disabled')
+			elmButtonSubmit.html('Menyimpan')
+
+			httpRequest(pathSubmit, formData, method).then((res) => {
 			elmButtonSubmit.html('Simpan')
 			if (res.is_success) {
 				notifAlertForm.innerHTML = alertForm("success", res.message);
@@ -473,6 +489,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 			}, 5000)
 			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
 		})
+		}
 	}
 
 	function setPointTask(taskId) {
@@ -593,11 +610,12 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 			data.forEach((elm,i) => {
 				lists += `<li class="list-group-item d-flex justify-content-between align-items-center">
 							${elm.filename}`
+				lists += `<div><button class="btn btn-sm btn-primary mr-1" onclick="window.open('${BASE_URL}dist/${elm.filename}')"><i class="fa fa-file"></i></button>`
 				if (!isManagement) {
 					lists += `<button class="btn btn-sm btn-danger" onclick="deleteAttachment(${elm.id}, ${elm.id_discuss})"><i class="fa fa-trash"></i></button>`
 				}
 					
-				lists += `</li>`
+				lists += `</div></li>`
 			})
 
 			setTimeout(() => {
