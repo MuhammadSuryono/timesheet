@@ -1648,9 +1648,17 @@ class Mingguan extends Api
     $id_rincian = $this->input->post('id_rincian');
     $persentase = $this->input->post('persentase_kurang');
     $alasan = $this->input->post('alasan_kurang');
+		
+		$status = "Berprogress";
+		if ($persentase == 0) {
+			$status = "";
+		}elseif ($persentase == 100) {
+			$status = "Done 100%";
+		}
 
     $data = ['targetpersen' => $persentase,
-             'alasan_cut' => $alasan
+             'alasan_cut' => $alasan,
+						 'status' => $status,
             ];
 
     $this->db->update('rincian', $data, ['id_rincian' => $id_rincian]);
