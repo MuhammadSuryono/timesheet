@@ -48,7 +48,7 @@ class Api extends Discuss
 		$isAdjustmenPoint = count($dataPointAdjustment) > 0;
 
 		$point = 0;
-		$persentase = (int)$data['persentase'];
+		$persentase = (int)$data['targetpersen'];
 
 		$dateInput = $data['tanggalisi'];
 		// $startDate = $this->parseDateToTimestampApi($data['daritanggal']);
@@ -78,7 +78,8 @@ class Api extends Discuss
 		$totalPotonganOverWeekly = ($weekFinish - $weekInput) * 25;
 		$totalPotonganOverWeekly = $totalPotonganOverWeekly > 100 ? 100 : $totalPotonganOverWeekly;
 		$selisihHari = $this->selisihHariByDate($data['tanggal_input_selesai'], $data['tanggal_target_seelsai_rincian']);
-
+		$selisihHari = $selisihHari->format('%d');
+		log_message('info', $selisihHari - 1);
 		if (!$isAdjustmenPoint) {
 			if ($weekInput == $weekFinish || $weekFinish < $weekInput) {
 				if ($persentase >= 100 && $dateFinish < $dateTarget || $dateFinish === $dateTarget) {
