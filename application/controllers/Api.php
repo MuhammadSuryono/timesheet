@@ -122,13 +122,5 @@ class Api extends Discuss
 
 	}
 
-	public function alreadyDiscuss($idTask, $weekNumber)
-	{
-		$weekDate = $this->getStartAndEndDate($weekNumber);
-		$discussModel = $this->Discuss_model;
-
-		$dataDiscuss = $discussModel->getDiscussByTaskIdRangeDate($idTask, $weekDate['week_start'], $weekDate['week_end']);
-
-		return count($dataDiscuss) > 0;
-	}
+	
 }

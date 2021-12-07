@@ -53,6 +53,16 @@
   <!-- /END GA -->
 </head>
 
+<style>
+	.shadow {
+		box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+	}
+
+	.pointer {
+		cursor: pointer;
+	}
+</style>
+
 <body>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
@@ -86,6 +96,7 @@
         ?>
       
         <ul class="navbar-nav navbar-right">
+					<a href="#" data-toggle="modal" data-target='#information-modal' class="nav-link nav-link-lg"><i class="far fa-question-circle"></i></a>
           <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg <?php echo $beep; ?>"><i class="far fa-bell"></i></a>
             <div class="dropdown-menu dropdown-list dropdown-menu-right">
               <div class="dropdown-header">Notifications
@@ -143,3 +154,43 @@
           </li>
         </ul>
       </nav>
+
+			<div class="modal fade" id="information-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-info-circle"></i> Informasi Tambahan</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div id="accordion">
+								<div class="card shadow">
+									<div class="card-header pointer" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										<h6 class="mb-0">
+												> Perhitungan Perolehan Poin
+										</h6>
+									</div>
+
+									<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+										<div class="card-body">
+											<b>Ketentuan Perolehan Poin:</b>
+											<p>Total keseluruhan poin penilaian adalah 100. Perolehan nilai akan menurun jika ketentuan dibawah ini terjadi, berikut ketentuan perhitungan perolehan poin:</p>
+											<ol>
+												<li>Setiap pekerjaan setidaknya memiliki data diskusi dengan pihak terkait baik itu manager maupun divisi lain terkait dengan pekerjaan tersebut</li>
+												<li>Perolehan nilai akan sempurna jika pekerjaan diselesaikan <b>Tepat Waktu</b> atau <b>Lebih cepat</b> dari target yang telah dibuat</li>
+												<li>Jika pekerjaan diselesaikan lewat dari target yang di tentukan dan masih dalam periode minggu TKM, poin akan berkurang <b>5 Poin</b> untuk per-harinya</li>
+												<li>Jika pekerjaan diselesaikan lewat dari target serta melewati batas TKM yang disepakati dan namun disertai data diskusi, poin akan berkurang <b>25 poin</b> setiap minggunya</li>
+												<li>Jika pekerjaan diselesaikan lewat dari target serta melewati batas TKM yang disepakati dan <b>tidak</b> disertai data diskusi, poin akan berkurang <b>50 poin</b> setiap minggunya</li>
+												<li>Jika pekerjaan diselesaikan lewat dari target serta melewati batas TKM yang disepakati sebanyak 2x dan <b>tidak</b> disertai data diskusi, staff serta atasannya akan dikenakan <span class="text-danger">PINALTI</span></li>
+											</ol>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>

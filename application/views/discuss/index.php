@@ -225,7 +225,8 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 					<div class="col-lg-8">
 						<div class="mb-4">
 							<label>Pilih Dokumen Pendukung</label> <br>
-							<input type="file" name="file" accept="*" id="attachment">
+							<input type="file" name="file" accept=".pdf,.gif,.png,.jpg,.jpeg,.xls,.xlsx,.txt,.doc,.docx" id="attachment"><br/>
+							<small>Maksimal ukuran file 10kb</small>
 						</div>
 					</div>
 					<div class="col-lg-4 text-right">
@@ -299,6 +300,7 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 		})
 
 		btnSubmitUploadAttachment.click(function() {
+			btnSubmitUploadAttachment.attr("disabled", true)
 			submitAttachment();
 		})
 
@@ -628,9 +630,11 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 	function submitAttachment() {
 		const notifAlertForm = document.getElementById('alert-form-attachment')
 		const input = document.getElementById('attachment');
+		const btnSubmitUploadAttachment = $('#submitUploadFile')
 		let file = input.files[0];
 
 		uploadFile(file).then((res) => {
+			btnSubmitUploadAttachment.removeAttr("disabled");
 			if (res.is_success) {
 				notifAlertForm.innerHTML = alertForm("success", res.message)
 				setListAttachments(stateIdDiscuss)
@@ -641,11 +645,11 @@ $titleDeskripsiPekerjaan = isset($dataTitleSplit[1]) ? $dataTitleSplit[1] : "-";
 				setTimeout(() => {
 					notifAlertForm.innerHTML = ""
 				}, 2000)
-				notifAlertForm.innerHTML = alertForm("danger", res.message)
+				notifAlertForm.innerHTML = alertForm("danger", res.data.error)
 			}
 		}).catch((e) => {
 			console.warn(e)
-			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika membuat diskusi");
+			notifAlertForm.innerHTML = alertForm("danger", "Terjadi masalah ketika mengunggah file");
 			setTimeout(() => {
 				notifAlertForm.innerHTML = ""
 			}, 2000)

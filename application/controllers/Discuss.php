@@ -104,8 +104,8 @@ class Discuss extends MY_Controller {
 	public function upload_attachment($taskId, $discussId) {
 		$attachmentModel = $this->Attachment_model;
 		$config['upload_path']          = './dist/';
-		$config['max_size']             = 100;
-		$config['allowed_types']        = 'jpg|gif|png|pdf|doc|docx|xls|xlsx|jpeg';
+		$config['max_size']             = 10;
+		$config['allowed_types']        = 'jpg|gif|png|pdf|doc|docx|xls|xlsx|jpeg|txt';
  
 		$this->load->library('upload', $config);
 		$this->upload->initialize($config);
@@ -193,6 +193,16 @@ class Discuss extends MY_Controller {
 		$desc = count($dataDiscuss) > 0 ? "Dengan Diskusi" : "Tidak dengan Diskusi";
 
 		return $desc;
+	}
+
+	public function alreadyDiscuss($idTask, $weekNumber)
+	{
+		$weekDate = $this->getStartAndEndDate($weekNumber);
+		$discussModel = $this->Discuss_model;
+
+		$dataDiscuss = $discussModel->getDiscussByTaskIdRangeDate($idTask, $weekDate['week_start'], $weekDate['week_end']);
+
+		return count($dataDiscuss) > 0;
 	}
 }
 
