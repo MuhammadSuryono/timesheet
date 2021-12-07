@@ -65,33 +65,8 @@
         <a href="<?= base_url('mingguan/perpanjang/'.$user) ?>" class="btn btn-warning">Pengajuan Perpanjang Target Selesai</a>
 
       <hr>
-        <?php
-        $time = strtotime("-14 days", time());
-        $bulan3 = date("Y-m-d", $time);
-        $datenow = date("Y-m-d");
-        // echo $bulan3;
-        // 
-
-        $get = $this->db->query("SELECT
-                                                a.*,
-                                              --  SUM(c.persentase) AS sumper,
-                                                d.deskripsi, 
-                                              d.no as no_pekerjaan,
-                                              b.daritanggal,
-                                              b.sampaitanggal,
-                                              e.*
-                                              FROM
-                                                tkmstaff a
-                                              JOIN tkmdivisi b ON a.idtkmdiv = b.no
-                                              -- LEFT JOIN tugasharian c ON a.idtkmdiv = c.idtkmdiv
-                                              -- AND a.project = c.project
-                                              LEFT JOIN pekerjaan d ON a.idtkmdiv = d.idtkmdiv AND a.project = d.project
-                                              JOIN rincian e ON a.no=e.id_tkmstaff AND d.no=e.idpekerjaan
-                                              WHERE
-                                                a.userstaff = '$user'
-                                                -- AND ((a.tanggalisi between '$bulan3' AND '$datenow') OR e.targetpersen < 100)
-                                                AND ((b.daritanggal between '$bulan3' AND '$datenow') OR (e.targetpersen < 100 OR e.targetpersen IS NULL))
-                                                ")->result_array(); ?>
+       
+       
         <b><span class="text-warning faa-flash animated">*Note </span> : Detail pekerjaan harian dapat dilihat di menu laporan timesheet!</h5></b>
         <div class="table-responsive">
 

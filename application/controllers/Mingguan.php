@@ -1617,6 +1617,8 @@ class Mingguan extends Api
   {
     $data['judul'] = 'Rekap Pekerjaan';
 
+    $data['get'] = $this->Mingguan_model->get_rekap_range();
+
     $this->load->view('template/header', $data);
     $this->load->view('template/sidebar');
     $this->load->view('mingguan/rekap_pekerjaan', $data);
