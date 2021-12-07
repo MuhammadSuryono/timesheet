@@ -262,12 +262,44 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="tolak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Keterangan Penolakan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="<?= base_url('harian/tolak_rekap'); ?>">
+          <input type="hidden" name="id_rincian" class="form-control" id="id_rincian_tolak">
+          <div class="form-group">
+            <label for="alasan_tolak">Alasan Penolakan</label>
+              <textarea class="form-control" id="alasan_tolak" name="alasan_tolak"></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 <script type="text/javascript">
+
+  function clickTolak(id){
+   console.log(id);
+   $('#id_rincian_tolak').val(id);
+   }
 
 function gantiDivisi(){
   
@@ -329,9 +361,13 @@ function gantiDivisi(){
               
                 ht += `<tr>
                       <td>`+num+`</td>
-                      <td>`+hasil[i]['tanggal']+`</td>
-                      <td>`+hasil[i]['keterangan']+`</td>
-                      <td>`+hasil[i]['persentase']+`%</td>`;
+                      <td>`+hasil[i]['tanggal']+`</td>`;
+                      if (hasil[i]['keterangan'] == null || hasil[i]['keterangan'] == '') {
+                ht +=  `<td>Tidak Ada Note</td>`;
+                    } else {
+                 ht +=  `<td>`+hasil[i]['keterangan']+`</td>`;
+                    }   
+                  ht += `<td>`+hasil[i]['persentase']+`%</td>`;
                 if (hasil[i]['fileupload'] != null && hasil[i]['fileupload'] != "") {  
                   ht += `<td><a target="_blank" href="<?php echo base_url('dist/upload/') ?>`+hasil[i]['fileupload']+`"><i class="fa fa-file"></i></a></td>`;
                 } else {

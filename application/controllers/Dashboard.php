@@ -25,14 +25,15 @@ class Dashboard extends Api
 		$idUser = $this->session->userdata('ses_id');
 
 
-    $data['direksinya'] = $this->db->query("SELECT atasan FROM tb_user WHERE divisi='$divisi' AND jabatan1='Leader 1'")->row_array();
+    $data['direksinya'] = $this->db->query("SELECT atasan FROM tb_user WHERE divisi='$divisi' AND hak_akses='Manager'")->row_array();
 
     $data['leader'] = $this->db->query("SELECT
                                               *
                                           FROM tb_user
                                           WHERE divisi='$divisi'
                                           AND aktif='Y'
-                                          AND jabatan1 !='Staff'
+                                          -- AND jabatan1 !='Staff'
+                                          AND hak_akses !='Pegawai'
                                           OR divisi='$divisi'
                                           AND aktif='Y'
                                           AND jabatan1 != NULL ORDER BY jabatan1")->result_array();
@@ -45,7 +46,9 @@ class Dashboard extends Api
                                             -- OR divisi='$divisi'
                                             -- AND jabatan1 !='Leader 2'
                                             -- OR divisi='$divisi'
-                                            AND jabatan1 ='Staff' OR 
+                                            -- AND jabatan1 ='Staff'
+                                            AND hak_akses='Pegawai' 
+                                            OR 
                                             atasan='$nama' GROUP BY id_user ORDER BY nama_user")->result_array();
     $data['judul'] = 'MRI TIMESHEET WFH';
 

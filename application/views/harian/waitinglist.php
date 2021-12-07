@@ -292,29 +292,7 @@
               </tr>
             </thead>
             <tbody id="data_wl">
-              <!-- <?php
-              $no = 1;
-              if ($waitinglist != NULL) {
-                
-              foreach ($waitinglist as $wl) {
-                ?>
-              <tr>
-                <td><?php echo $no++; ?></td>
-                <td><?php echo $wl['pekerjaan']; ?></td>
-                  <td><?= $wl['delivery_to'] ?></td>
-                <td>
-                    <?php echo date('d/m/Y', strtotime($wl['tgl_delivery'])) ?>
-                  </td>
-                <td><?php echo $wl['nama_user']; ?></td>
-                
-              </tr>
-            <?php }
-            } else { ?>
-              <tr>
-                <td colspan="3"><center><h6>Data Tidak Tersedia</h6></center></td>
-                
-              </tr>
-            <?php } ?> -->
+              
             </tbody>
           </table>
           <div class="text-right" id="lok_approve"></div>
@@ -474,6 +452,24 @@ if (box.checked) { // jika checkbox teratar dipilih maka semua tag input juga di
    }
   }
 
+  function ApproveAll(box)
+  {
+   let checkboxes = document.querySelectorAll("[id='approve_wl']");
+if (box.checked) { // jika checkbox teratar dipilih maka semua tag input juga dipilih
+    for (let i = 0; i < checkboxes.length; i++) {
+     if (checkboxes[i].type == 'checkbox') {
+      checkboxes[i].checked = true;
+     }
+    }
+   } else { // jika checkbox teratas tidak dipilih maka semua tag input juga tidak dipilih
+    for (let i = 0; i < checkboxes.length; i++) {
+     if (checkboxes[i].type == 'checkbox') {
+      checkboxes[i].checked = false;
+     }
+    }
+   } 
+  }
+
 
   $(document).ready(function(){
     $('[data-toggle="popover"]').popover();
@@ -501,6 +497,7 @@ if (box.checked) { // jika checkbox teratar dipilih maka semua tag input juga di
       var no = 0;
       var ht = '';
       var bt = '';
+      if (coba.length > 0) {
       for (var i = 0; i < coba.length; i++) {
         var today = coba[i]['tgl_delivery'].split("-");
         var tanggal = today[2]+"/"+today[1]+"/"+today[0];
@@ -517,13 +514,21 @@ if (box.checked) { // jika checkbox teratar dipilih maka semua tag input juga di
               ht += '<td><center>';
             ht += '<a type="button" href="#" onclick="hapusWL(`'+coba[i]['id']+'`,`'+coba[i]['id_user']+'`)"><i class="fas fa-trash" style="color: red"></i></a>&nbsp;Hapus<br>';
             ht += '<a type="button" id="editin_head'+coba[i]['id']+'" href="#" data-toggle="modal" data-target="#head_editwl" data-num="'+coba[i]['id']+'" data-kalimat="'+coba[i]['pekerjaan']+'" data-tanggal="'+coba[i]['tgl_delivery']+'" data-pembuat="'+coba[i]['id_user']+'" onclick="headEdit(`'+coba[i]['id']+'`)"><i class="fas fa-edit"></i></a>&nbsp;Edit<br>';
-            ht += '<input type="checkbox" name="approve_wl[]" value="'+coba[i]['id']+'">&nbsp;Approve</center></td>';
+            ht += '<input type="checkbox" name="approve_wl[]" id="approve_wl" value="'+coba[i]['id']+'">&nbsp;Approve</center></td>';
         
         ht += '</tr>';
       }
+        bt += '<input type="checkbox" id="all_approve" onchange="ApproveAll(this)"> <b>Approve All</b>&nbsp;';
         bt += '<input type="submit" class="btn btn-success" name="btn_approve" value="Approve & Save">';
       $('#data_wl').append(ht);
       $('#lok_approve').append(bt);
+
+    } else {
+      ht += '<tr><td colspan="6"><center>Tidak Ada Data</center></td></tr>';
+      $('#data_wl').append(ht);
+      
+
+    }
 
     }
   });
