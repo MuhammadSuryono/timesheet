@@ -1416,4 +1416,27 @@ class Mingguan_model extends CI_Model
 
     return $this->db->get_where('tb_user', ['divisi' => $divisi])->result_array();
   }
+
+  public function kurangi_rekap()
+  {
+    $id_rincian = $this->input->post('id_rincian');
+    $persentase = $this->input->post('persentase_kurang');
+    $alasan = $this->input->post('alasan_kurang');
+
+    $status = 'Berprogres';
+    if ($persentase == 100) {
+      $status = '';
+    }
+
+    $rincian = ['targetpersen' => $persentase,
+             'alasan_cut' => $alasan,
+             'status' => $status
+            ];
+
+    $get = $this->db->get_where('rincian', ['id_rincian' => $id_rincian])->row_array();
+
+    $this->db->update('rincian', $rincian, ['id_rincian' => $id_rincian]);
+
+    $this->db->update('tkmstaff', ['persentase' => $persentase], ['no' => $get['id_tkmstaff']]);
+  }
 }

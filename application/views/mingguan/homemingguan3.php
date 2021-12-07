@@ -117,15 +117,20 @@
                 if ($jam >= $meet['dari_jam'] AND $jam <= $meet['sampai_jam'] AND $datenow == $meet['tanggal'] AND ($akses == 'Manager' OR $akses == 'Direksi')) {
                    ?>
                 <a href="<?= base_url('mingguan/meeting_room/'.$meet['no_meet'] )?>" class="btn btn-warning">Masuk</a>
+                <br><a href="<?= $meet['link'] ?>" target="_blank" class="btn btn-success">Link Meeting</a>
+
               <?php } else if ($jam < $meet['dari_jam'] AND $datenow <= $meet['tanggal'] OR $datenow < $meet['tanggal']) {
                 echo "<p class='font-weight-bold'>Meeting Belum Dimulai</p>";
               } else if ($jam > $meet['sampai_jam'] AND $datenow == $meet['tanggal']){
                 echo "<p class='font-weight-bold text-danger'>Meeting Telah Selesai</p>";
                 // } else if ($jam < $meet['sampai_jam'] AND $jam > $akhir_jam AND $akses != 'Manager' AND $datenow == $meet['tanggal']){
                 // echo "<p class='font-weight-bold text-danger'>Maaf Anda terlambat datang meeting!</p>";
-                } else if ($jam >= $meet['dari_jam'] AND $jam <= $meet['sampai_jam'] AND ($akses != 'Manager' AND $akses != 'Direksi') AND  $datenow == $meet['tanggal'] AND $cek_absen['waktu'] != NULL){
+                } else if ($jam >= $meet['dari_jam'] AND $jam <= $meet['sampai_jam'] AND ($akses != 'Manager' AND $akses != 'Direksi') AND  $datenow == $meet['tanggal']){
+                 // AND $cek_absen['waktu'] != NULL
                  ?>
-                <a href="<?= base_url('mingguan/meeting_room/'.$meet['no_meet'] )?>" class="btn btn-warning">Masuk</a>
+                <!-- <a href="<?= base_url('mingguan/meeting_room/'.$meet['no_meet'] )?>" class="btn btn-warning">Masuk</a> -->
+                <a href="<?= $meet['link'] ?>" target="_blank" class="btn btn-warning">Masuk</a>
+
                 <?php }
                  ?>
                </td>
@@ -592,6 +597,10 @@
           <textarea class="form-control" name="keterangan"></textarea>
         </div>
         <div class="form-group">
+          <label for="link" class="font-weight-bold">Link Meeting</label>
+          <textarea class="form-control" name="link"></textarea>
+        </div>
+        <div class="form-group">
           <label for="keterangan" class="font-weight-bold">Undang Peserta Meeting</label>
           <br>
           <?php
@@ -677,6 +686,10 @@
         <div class="form-group">
           <label for="keterangan" class="font-weight-bold">Keterangan</label>
           <textarea class="form-control" name="keterangan"><?= $meet['keterangan'] ?></textarea>
+        </div>
+        <div class="form-group">
+          <label for="link" class="font-weight-bold">Link Meeting</label>
+          <textarea class="form-control" name="link"><?= $meet['link'] ?></textarea>
         </div>
 
       </div>

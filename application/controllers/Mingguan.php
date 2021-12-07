@@ -1486,6 +1486,7 @@ class Mingguan extends Api
             'daritanggal' => $pecah[0],
             'sampaitanggal' => $pecah[1],
             'keterangan' => $this->input->post('keterangan'),
+            'link' => $this->input->post('link'),
             'tanggal_isi' => $waktu 
             ];
     $this->db->insert('meeting_tkm', $data);
@@ -1540,7 +1541,8 @@ class Mingguan extends Api
             'sampai_jam' => $this->input->post('sampai_jam'),
             'daritanggal' => $this->input->post('daritanggal'),
             'sampaitanggal' => $this->input->post('sampaitanggal'),
-            'keterangan' => $this->input->post('keterangan')
+            'keterangan' => $this->input->post('keterangan'),
+            'link' => $this->input->post('link')
             ];
     $this->db->where('no', $num);
     $this->db->update('meeting_tkm', $data);
@@ -1645,15 +1647,7 @@ class Mingguan extends Api
 
   public function kurangi_rekap()
   {
-    $id_rincian = $this->input->post('id_rincian');
-    $persentase = $this->input->post('persentase_kurang');
-    $alasan = $this->input->post('alasan_kurang');
-
-    $data = ['targetpersen' => $persentase,
-             'alasan_cut' => $alasan
-            ];
-
-    $this->db->update('rincian', $data, ['id_rincian' => $id_rincian]);
+    $this->Mingguan_model->kurangi_rekap();
 
     $this->session->set_flashdata('flash2', 'Berhasil Edit Persentase Penyelesaian Pekerjaan');
     redirect('mingguan/rekap_pekerjaanhead');

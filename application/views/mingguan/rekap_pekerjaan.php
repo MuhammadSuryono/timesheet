@@ -408,9 +408,13 @@ function detailnya(id){
               
                 ht += `<tr>
                       <td>`+num+`</td>
-                      <td>`+hasil[i]['tanggal']+`</td>
-                      <td>`+hasil[i]['keterangan']+`</td>
-                      <td>`+hasil[i]['persentase']+`%</td>`;
+                      <td>`+hasil[i]['tanggal']+`</td>`;
+                    if (hasil[i]['keterangan'] == null || hasil[i]['keterangan'] == '') {
+                ht +=  `<td>Tidak Ada Note</td>`;
+                    } else {
+                 ht +=  `<td>`+hasil[i]['keterangan']+`</td>`;
+                    }       
+                ht += `<td>`+hasil[i]['persentase']+`%</td>`;
                 if (hasil[i]['fileupload'] != null && hasil[i]['fileupload'] != "") {  
                   ht += `<td><a target="_blank" href="<?php echo base_url('dist/upload/') ?>`+hasil[i]['fileupload']+`"><i class="fa fa-file"></i></a></td>`;
                 } else {
