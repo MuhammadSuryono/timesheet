@@ -1342,7 +1342,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `absensi01` AS select cast(`absensi`.`tgl_dan_jam` as date) AS `tanggal`,`absensi`.`user_id` AS `user_id`,min(`absensi`.`tgl_dan_jam`) AS `Masuk`,max(`absensi`.`tgl_dan_jam`) AS `Keluar`,`tanggal_mulaiakhir`.`tanggalmulai` AS `tanggalmulai`,`tanggal_mulaiakhir`.`tanggalakhir` AS `tanggalakhir` from (`absensi` join `tanggal_mulaiakhir`) where ((`absensi`.`tgl_dan_jam` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`absensi`.`tgl_dan_jam` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by cast(`absensi`.`tgl_dan_jam` as date),`absensi`.`user_id` order by cast(`absensi`.`tgl_dan_jam` as date),`absensi`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1360,7 +1360,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `absensi02` AS select `absensi01`.`tanggal` AS `tanggal`,`absensi01`.`user_id` AS `user_id`,cast(`absensi01`.`Masuk` as time) AS `Masuk`,cast(`absensi01`.`Keluar` as time) AS `Keluar`,timediff(`absensi01`.`Keluar`,`absensi01`.`Masuk`) AS `jam_kerja` from `absensi01` where ((cast(`absensi01`.`Masuk` as time) <= '08:30:00') and (timediff(`absensi01`.`Keluar`,`absensi01`.`Masuk`) >= '09:00:00')) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1378,7 +1378,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `absensi03` AS select `absensi02`.`user_id` AS `user_id`,`tb_user`.`id_user` AS `username`,count(0) AS `JumMasukTdkTelat`,sum(`absensi02`.`jam_kerja`) AS `tot_jam_kerja` from (`absensi02` join `tb_user` on((`absensi02`.`user_id` = `tb_user`.`id_absen`))) group by `absensi02`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1396,7 +1396,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `itung_cuti` AS select `absensi03`.`username` AS `username`,count(`daterange_cuti`.`no`) AS `jmlcuti` from ((`daterange_cuti` join `absensi03` on((`daterange_cuti`.`username` = `absensi03`.`username`))) join `tanggal_mulaiakhir`) where ((`daterange_cuti`.`tanggal` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`daterange_cuti`.`tanggal` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by `absensi03`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1414,7 +1414,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `itung_mangkir` AS select `absensi03`.`username` AS `username`,count(`tb_mangkir`.`no`) AS `jmlmangkir` from ((`tb_mangkir` join `absensi03` on((`tb_mangkir`.`username` = `absensi03`.`username`))) join `tanggal_mulaiakhir`) where ((`tb_mangkir`.`tanggal` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`tb_mangkir`.`tanggal` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by `absensi03`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1432,7 +1432,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `itung_sdsd` AS select `absensi03`.`username` AS `username`,count(`daterange_izin`.`no`) AS `jmlsdsd` from ((`daterange_izin` join `absensi03` on((`daterange_izin`.`username` = `absensi03`.`username`))) join `tanggal_mulaiakhir`) where ((`daterange_izin`.`jenis` = 'Sakit Dengan Surat Dokter') and (`daterange_izin`.`tanggal` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`daterange_izin`.`tanggal` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by `absensi03`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1450,7 +1450,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `itung_stsd` AS select `absensi03`.`username` AS `username`,count(`daterange_izin`.`no`) AS `jmlstsd` from ((`daterange_izin` join `absensi03` on((`daterange_izin`.`username` = `absensi03`.`username`))) join `tanggal_mulaiakhir`) where ((`daterange_izin`.`jenis` = 'Sakit Tanpa Surat Dokter') and (`daterange_izin`.`tanggal` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`daterange_izin`.`tanggal` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by `absensi03`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1468,7 +1468,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `itung_unpaid` AS select `absensi03`.`username` AS `username`,count(`daterange_unpaid`.`no`) AS `jmlunpaid` from ((`daterange_unpaid` join `absensi03` on((`daterange_unpaid`.`username` = `absensi03`.`username`))) join `tanggal_mulaiakhir`) where ((`daterange_unpaid`.`tanggal` >= `tanggal_mulaiakhir`.`tanggalmulai`) and (`daterange_unpaid`.`tanggal` <= `tanggal_mulaiakhir`.`tanggalakhir`)) group by `absensi03`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1486,7 +1486,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `jammasukpulang` AS select `absensi`.`user_id` AS `user_id`,`absensi`.`tgl_dan_jam` AS `tgl_dan_jam`,`absensi`.`verifikasi` AS `verifikasi`,`absensi`.`lokasi` AS `lokasi`,`absensi`.`jamnya` AS `jamnya` from `absensi` group by cast(`absensi`.`tgl_dan_jam` as date) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1504,7 +1504,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `v_monthly_report` AS select `a`.`USERID` AS `USERID`,`a`.`Name` AS `name`,`b`.`CHECKTIME` AS `tanggal`,max(cast(`b`.`CHECKTIME` as time)) AS `maximum`,cast(`b`.`CHECKTIME` as date) AS `tanggalonly`,(case when (dayofmonth(`b`.`CHECKTIME`) = 1) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `1`,(case when (dayofmonth(`b`.`CHECKTIME`) = 2) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `2`,(case when (dayofmonth(`b`.`CHECKTIME`) = 3) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `3`,(case when (dayofmonth(`b`.`CHECKTIME`) = 4) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `4`,(case when (dayofmonth(`b`.`CHECKTIME`) = 5) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `5`,(case when (dayofmonth(`b`.`CHECKTIME`) = 6) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `6`,(case when (dayofmonth(`b`.`CHECKTIME`) = 7) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `7`,(case when (dayofmonth(`b`.`CHECKTIME`) = 8) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `8`,(case when (dayofmonth(`b`.`CHECKTIME`) = 9) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `9`,(case when (dayofmonth(`b`.`CHECKTIME`) = 10) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `10`,(case when (dayofmonth(`b`.`CHECKTIME`) = 11) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `11`,(case when (dayofmonth(`b`.`CHECKTIME`) = 12) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `12`,(case when (dayofmonth(`b`.`CHECKTIME`) = 13) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `13`,(case when (dayofmonth(`b`.`CHECKTIME`) = 14) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `14`,(case when (dayofmonth(`b`.`CHECKTIME`) = 15) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `15`,(case when (dayofmonth(`b`.`CHECKTIME`) = 16) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `16`,(case when (dayofmonth(`b`.`CHECKTIME`) = 17) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `17`,(case when (dayofmonth(`b`.`CHECKTIME`) = 18) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `18`,(case when (dayofmonth(`b`.`CHECKTIME`) = 19) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `19`,(case when (dayofmonth(`b`.`CHECKTIME`) = 20) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `20`,(case when (dayofmonth(`b`.`CHECKTIME`) = 21) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `21`,(case when (dayofmonth(`b`.`CHECKTIME`) = 22) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `22`,(case when (dayofmonth(`b`.`CHECKTIME`) = 23) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `23`,(case when (dayofmonth(`b`.`CHECKTIME`) = 24) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `24`,(case when (dayofmonth(`b`.`CHECKTIME`) = 25) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `25`,(case when (dayofmonth(`b`.`CHECKTIME`) = 26) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `26`,(case when (dayofmonth(`b`.`CHECKTIME`) = 27) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `27`,(case when (dayofmonth(`b`.`CHECKTIME`) = 28) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `28`,(case when (dayofmonth(`b`.`CHECKTIME`) = 29) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `29`,(case when (dayofmonth(`b`.`CHECKTIME`) = 30) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `30`,(case when (dayofmonth(`b`.`CHECKTIME`) = 31) then (case when (dayofmonth(`b`.`CHECKTIME`) is not null) then cast(`b`.`CHECKTIME` as time) else 'X' end) end) AS `31` from (`userinfo` `a` join `checkinout` `b` on((`a`.`USERID` = `b`.`USERID`))) group by `b`.`CHECKTIME` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1540,7 +1540,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `vcheckin` AS select `checkinout`.`USERID` AS `USERID`,cast(`checkinout`.`CHECKTIME` as date) AS `Tgl`,min(`checkinout`.`CHECKTIME`) AS `CheckIn` from `checkinout` group by `checkinout`.`USERID`,cast(`checkinout`.`CHECKTIME` as date) order by cast(`checkinout`.`CHECKTIME` as date),`checkinout`.`USERID` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -1558,7 +1558,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`jayatta`@`` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`mri`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `view_tedi` AS select `tb_user`.`nama_user` AS `nama`,`tb_user`.`id_absen` AS `id_absen`,`absensi`.`user_id` AS `user_id`,min(`absensi`.`tgl_dan_jam`) AS `JamMasuk`,max(`absensi`.`tgl_dan_jam`) AS `JamKeluar` from (`tb_user` join `absensi`) where ((`tb_user`.`id_absen` = `absensi`.`user_id`) and (cast(`absensi`.`tgl_dan_jam` as date) between '2019-06-21' and '2019-06-21')) group by `absensi`.`user_id` order by `tb_user`.`nama_user` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
